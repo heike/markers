@@ -75,6 +75,6 @@ do.call(marrangeGrob, list(reps$plot[1:8], nrow=4, ncol=2))
 
 
 ml = do.call(marrangeGrob, list(reps$plot, nrow=4, ncol=2))
-ggsave("multipage.pdf", ml)       
+ggsave("figures/multipage.pdf", ml)       
 ```
 Download [pdf](multipage.pdf) with multiple pages of figures.
