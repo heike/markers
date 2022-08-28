@@ -37,9 +37,9 @@ load("data/toolmarks.RData")
 
 ``` r
 library(tidyverse)
-#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
 #> ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-#> ✔ tibble  3.1.7     ✔ dplyr   1.0.9
+#> ✔ tibble  3.1.8     ✔ dplyr   1.0.9
 #> ✔ tidyr   1.2.0     ✔ stringr 1.4.0
 #> ✔ readr   2.1.2     ✔ forcats 0.5.1
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -80,9 +80,55 @@ do.call(marrangeGrob, list(reps$plot[1:8], nrow=4, ncol=2))
 
 ``` r
 
+
 ml = do.call(marrangeGrob, list(reps$plot, nrow=4, ncol=2))
 ggsave("multipage.pdf", ml)       
 #> Saving 7 x 10 in image
 ```
 
 Download [pdf](multipage.pdf) with multiple pages of figures.
+
+From Maria (Aug 2022)
+
+The steps so far are:
+
+-   Convert stl files to x3p files and save in an appropriate folder
+
+``` r
+stls <- dir(pattern="stl", path="data/stl_files", full.names = TRUE)
+
+
+for (file in stls) {
+  stl_tool <- rgl::readSTL(file, plot=FALSE)
+  x3p <- stl_to_x3p(stl_tool)
+  x3p %>% x3p_write(file = gsub(".stl", ".x3p", file)) # not that this will re-name EVERY x3p by stl, i.e. no need to deal with stl_files to x3p_files separately
+}
+```
+
+-   signature extraction – I’m just filtering the signal from a set
+    value of x to another. I bet this makes it so we lose some of the
+    signal, but it’s simple. adding metadata –– So far I haven’t run
+    this code, so the x3p files don’t have the correct metadata. Nina
+    made a spreadsheet with this information, so all it would take is to
+    run it, but it’s slow.
+-   aligning signatures –– I’m still doing this my initial way instead
+    of using your “markers” way because I added a piece in which all
+    marks are the same length, 900 points, with NA fillers on either
+    side. I figured this would make modeling easier. One thing I haven’t
+    done is to align the signals based on two criteria: the subset by
+    tool (marks at different angles) and then by angle. When I tried
+    aligning the marks made at different angles the alignment didn’t
+    look good.
+-   binning –– So far I’ve done this by choosing an arbitrary number of
+    bins (18, so that each bin has 50 points in it). It would be nice if
+    I could just change that number easily, e.g. b=22, and then the code
+    would just run. The way it’s written now it’s way too dependent on
+    the 18 bins.
+-   modeling –– The main task here has been calculating means by tool,
+    and then the variance across tools. I couldn’t figure out how to do
+    this in general so you’ll see it’s quite specific.
+
+One more point: - concatenating sides –– I’d like to start doing the
+whole analysis by using the signals from sides A and B of each tool
+concatenated. I think that is a more honest description of what the data
+are. That would have to be done after aligning, I think.

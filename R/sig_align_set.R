@@ -7,9 +7,14 @@
 #' @return data frame
 #' @export
 #' @importFrom rlang enquo
-#' @importfrom magrittr `%>%`
+#' @importFrom purrr map
+#' @importFrom tidyr nest unnest
+#' @importFrom dplyr group_by mutate select pull
+#' @importFrom bulletxtrctr sig_align
+#' @importFrom stats lag
+#' @examples
 #' load("data/toolmarks.Rdata")
-#' long <- sig_align_set(filter(toolmarks, tool == 2, side=="A"), value = signature,  group = mark)
+#' long <- sig_align_set(filter(toolmarks, tool == 1, side=="A"), value = signature,  group = mark)
 #' long %>% ggplot(aes(x =x, y = aligned, colour = factor(mark))) + geom_line()
 sig_align_set <- function(data, value, group) {
   group <- enquo(group)
@@ -27,10 +32,9 @@ sig_align_set <- function(data, value, group) {
     })
   )
 
-  long <- dlist %>% unnest(col = aligned)
+  long <- dlist %>% unnest(cols = aligned)
   long <- long %>% mutate(
-    lag = pmax(lag, 0),
-    x = x - lag) %>% select(-lag)
+    lag = pmax(lag, 0), x = x - lag) %>% select(-lag)
   long
 }
 

@@ -8,10 +8,18 @@ Description: Extract and compare signatures from three dimensional topographic s
 Depends: R (>= 3.5.0)
 Imports: 
   rlang (>= 1.0.3),
-  magrittr (>= 2.0.3)
+  magrittr (>= 2.0.3),
+  rgl (>= 0.109.6),
+  rayshader (>= 0.24.10),
+  purrr (>= 0.3.4),
+  tidyr (>= 1.2.0),
+  dplyr (>= 1.0.9),
+  bulletxtrctr 
+Remotes: 
+    heike/bulletxtrctr
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 URL: https://github.com/heike/markers
 BugReports: https://github.com/heike/markers/issues

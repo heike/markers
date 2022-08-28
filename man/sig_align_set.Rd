@@ -19,3 +19,8 @@ data frame
 \description{
 Align pairwise across signatures.
 }
+\examples{
+load("data/toolmarks.Rdata")
+long <- sig_align_set(filter(toolmarks, tool == 1, side=="A"), value = signature,  group = mark)
+long \%>\% ggplot(aes(x =x, y = aligned, colour = factor(mark))) + geom_line()
+}
