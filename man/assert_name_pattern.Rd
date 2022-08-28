@@ -11,8 +11,13 @@ assert_name_pattern(file, pattern, verbose = FALSE)
 
 \item{pattern}{format for a study, generally in regular expression. See e.g. \url{https://regexr.com/} for help in creating suitable patterns}
 }
+\value{
+vector of indices of files that don't pass the check
+}
 \description{
-Ensure that all files in a vector are correctly named
+This function runs a list of file names through a pattern check. A warning
+will be returned in case not all file names pass the check. Offending
+file names will be shown.
 }
 \examples{
 path <- "~/Documents/projects/toolmarks/data/x3p_files" # HH sorry for using absolute paths, Maria, you will need to exchange that with the path to the x3pfiles on your machine
