@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">markers</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.9000</span>
       </span>
     </div>
 
@@ -65,7 +65,8 @@
 <div class="section level1">
 <div class="page-header"><h1 id="markers">markers<a class="anchor" aria-label="anchor" href="#markers"></a>
 </h1></div>
-<!-- badges: start --><!-- badges: end --><p>The goal of markers is to …</p>
+<!-- badges: start -->
+<p>The goal of markers is to …</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -80,6 +81,73 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/heike/markers" class="external-link">markers</a></span><span class="op">)</span></span>
 <span><span class="co">## basic example code</span></span></code></pre></div>
+<ol style="list-style-type: decimal"><li>Load toolmarks</li></ol>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"data/toolmarks.RData"</span><span class="op">)</span></span></code></pre></div>
+<ol start="2" style="list-style-type: decimal"><li>Align by set</li></ol>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──</span></span>
+<span><span class="co">#&gt; ✔ ggplot2 3.3.6     ✔ purrr   0.3.4</span></span>
+<span><span class="co">#&gt; ✔ tibble  3.1.8     ✔ dplyr   1.0.9</span></span>
+<span><span class="co">#&gt; ✔ tidyr   1.2.0     ✔ stringr 1.4.1</span></span>
+<span><span class="co">#&gt; ✔ readr   2.1.2     ✔ forcats 0.5.1</span></span>
+<span><span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span><span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span></span>
+<span><span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span></span>
+<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">toolmarks</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">group_by</span><span class="op">(</span><span class="va">tool</span>, <span class="va">plate</span>, <span class="va">side</span>, <span class="va">angle</span>, <span class="va">direction</span>, <span class="va">size</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">nest</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">reps</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">mutate</span><span class="op">(</span></span>
+<span>  aligned_set <span class="op">=</span> <span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">sig_align_set</span>, value<span class="op">=</span><span class="va">signature</span>, group <span class="op">=</span> <span class="va">mark</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<ol start="3" style="list-style-type: decimal"><li>Visualize</li></ol>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">reps</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">unite</span><span class="op">(</span><span class="st">"id"</span>, <span class="va">tool</span>, <span class="va">plate</span>, <span class="va">side</span>, remove <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>  plot <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span><span class="va">aligned_set</span>, <span class="va">id</span>, .f <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>, <span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">gg</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span><span class="va">x</span>, y <span class="op">=</span> <span class="va">aligned</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">mark</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>      <span class="fu">ggtitle</span><span class="op">(</span><span class="va">id</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu">theme</span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span>
+<span>    <span class="va">gg</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">gridExtra</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'gridExtra'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:dplyr':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     combine</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">marrangeGrob</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">reps</span><span class="op">$</span><span class="va">plot</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>, nrow<span class="op">=</span><span class="fl">4</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="va">ml</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">marrangeGrob</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">reps</span><span class="op">$</span><span class="va">plot</span>, nrow<span class="op">=</span><span class="fl">4</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">ggsave</span><span class="op">(</span><span class="st">"figures/multipage.pdf"</span>, <span class="va">ml</span><span class="op">)</span>       </span>
+<span><span class="co">#&gt; Saving 7 x 10 in image</span></span></code></pre></div>
+<p>Download <a href="multipage.pdf">pdf</a> with multiple pages of figures.</p>
+<p>From Maria (Aug 2022)</p>
+<p>The steps so far are:</p>
+<ol style="list-style-type: decimal"><li>Convert stl files to x3p files and save in an appropriate folder</li></ol>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">stls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span>pattern<span class="op">=</span><span class="st">"stl"</span>, path<span class="op">=</span><span class="st">"data/stl_files"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">file</span> <span class="kw">in</span> <span class="va">stls</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">stl_tool</span> <span class="op">&lt;-</span> <span class="fu">rgl</span><span class="fu">::</span><span class="fu"><a href="https://dmurdoch.github.io/rgl/dev/reference/readSTL.html" class="external-link">readSTL</a></span><span class="op">(</span><span class="va">file</span>, plot<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">x3p</span> <span class="op">&lt;-</span> <span class="fu">stl_to_x3p</span><span class="op">(</span><span class="va">stl_tool</span><span class="op">)</span></span>
+<span>  <span class="va">x3p</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">x3p_write</span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">".stl"</span>, <span class="st">".x3p"</span>, <span class="va">file</span><span class="op">)</span><span class="op">)</span> <span class="co"># not that this will re-name EVERY x3p by stl, i.e. no need to deal with stl_files to x3p_files separately</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<ul>
+<li><p>signature extraction – I’m just filtering the signal from a set value of x to another. I bet this makes it so we lose some of the signal, but it’s simple. adding metadata –– So far I haven’t run this code, so the x3p files don’t have the correct metadata. Nina made a spreadsheet with this information, so all it would take is to run it, but it’s slow.</p></li>
+<li><p>aligning signatures –– I’m still doing this my initial way instead of using your “markers” way because I added a piece in which all marks are the same length, 900 points, with NA fillers on either side. I figured this would make modeling easier. One thing I haven’t done is to align the signals based on two criteria: the subset by tool (marks at different angles) and then by angle. When I tried aligning the marks made at different angles the alignment didn’t look good.</p></li>
+<li><p>binning –– So far I’ve done this by choosing an arbitrary number of bins (18, so that each bin has 50 points in it). It would be nice if I could just change that number easily, e.g. b=22, and then the code would just run. The way it’s written now it’s way too dependent on the 18 bins.</p></li>
+<li><p>modeling –– The main task here has been calculating means by tool, and then the variance across tools. I couldn’t figure out how to do this in general so you’ll see it’s quite specific.</p></li>
+</ul>
+<p>One more point: - concatenating sides –– I’d like to start doing the whole analysis by using the signals from sides A and B of each tool concatenated. I think that is a more honest description of what the data are. That would have to be done after aligning, I think.</p>
 </div>
 </div>
   </div>
@@ -116,7 +184,12 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </div>
 </div>
@@ -129,7 +202,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
