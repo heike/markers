@@ -17,7 +17,7 @@ assert_name_pattern <- function(file, pattern, verbose = FALSE) {
     return(NULL)
   }
 
-  warning(sprintf("file(s) \n'%s'\ndo not match pattern <%s>", paste(file[no_match], sep=", ", collapse=",\n "), pattern))
+  warning(sprintf("%d file(s) do not match pattern <%s>:\n'%s'", length(no_match),  pattern, paste(file[no_match], sep=", ", collapse=",\n ")))
   return(no_match)
 }
 

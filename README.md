@@ -105,6 +105,10 @@ for (file in stls) {
 }
 ```
 
+2.  Function `assert_name_pattern(files, pattern)` checks all file names
+    in vector `files` for compliance with the pattern given in
+    `pattern`.
+
 -   signature extraction – I’m just filtering the signal from a set
     value of x to another. I bet this makes it so we lose some of the
     signal, but it’s simple. adding metadata –– So far I haven’t run
