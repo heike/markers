@@ -40,7 +40,7 @@ library(tidyverse)
 #> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
 #> ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
 #> ✔ tibble  3.1.8     ✔ dplyr   1.0.9
-#> ✔ tidyr   1.2.0     ✔ stringr 1.4.0
+#> ✔ tidyr   1.2.0     ✔ stringr 1.4.1
 #> ✔ readr   2.1.2     ✔ forcats 0.5.1
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
@@ -82,7 +82,7 @@ do.call(marrangeGrob, list(reps$plot[1:8], nrow=4, ncol=2))
 
 
 ml = do.call(marrangeGrob, list(reps$plot, nrow=4, ncol=2))
-ggsave("multipage.pdf", ml)       
+ggsave("figures/multipage.pdf", ml)       
 #> Saving 7 x 10 in image
 ```
 
@@ -92,7 +92,7 @@ From Maria (Aug 2022)
 
 The steps so far are:
 
--   Convert stl files to x3p files and save in an appropriate folder
+1.  Convert stl files to x3p files and save in an appropriate folder
 
 ``` r
 stls <- dir(pattern="stl", path="data/stl_files", full.names = TRUE)
@@ -111,6 +111,7 @@ for (file in stls) {
     this code, so the x3p files don’t have the correct metadata. Nina
     made a spreadsheet with this information, so all it would take is to
     run it, but it’s slow.
+
 -   aligning signatures –– I’m still doing this my initial way instead
     of using your “markers” way because I added a piece in which all
     marks are the same length, 900 points, with NA fillers on either
@@ -119,11 +120,13 @@ for (file in stls) {
     tool (marks at different angles) and then by angle. When I tried
     aligning the marks made at different angles the alignment didn’t
     look good.
+
 -   binning –– So far I’ve done this by choosing an arbitrary number of
     bins (18, so that each bin has 50 points in it). It would be nice if
     I could just change that number easily, e.g. b=22, and then the code
     would just run. The way it’s written now it’s way too dependent on
     the 18 bins.
+
 -   modeling –– The main task here has been calculating means by tool,
     and then the variance across tools. I couldn’t figure out how to do
     this in general so you’ll see it’s quite specific.
