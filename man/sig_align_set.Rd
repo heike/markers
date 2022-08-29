@@ -22,7 +22,16 @@ Align pairwise across signatures.
 \examples{
 load("data/toolmarks.Rdata")
 toolmarks \%>\% group_by(tool, side, size) \%>\% summarize(angles = length(unique(angle)))
-tool1AL <- dplyr::filter(toolmarks, tool == "01", side=="A", size=="L")
+tool1AL <- dplyr::filter(toolmarks, tool == "02", side=="A", size=="L")
+# Align all signatures in one go
+aligned <- tool1AL \%>\% mutate(mark_angle = interaction(mark, angle)) \%>\% sig_align_set(value = signature,  group = mark_angle)
+aligned \%>\%
+  ggplot(aes(x =x, y = aligned, colour = mark_angle)) +
+  geom_line()
+wide <- aligned \%>\% select(-data) \%>\% pivot_wider(values_from = aligned, names_from = mark_angle)
+heatmap(cor(wide[,-(1:2)], use="pairwise.complete"))
+
+# Align signatures separately by angle
 long <- tool1AL \%>\% group_by(angle) \%>\% nest()
 long <- long \%>\% mutate(
   aligned = data \%>\% purrr::map(.f = function(d) {
