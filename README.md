@@ -15,7 +15,7 @@ The goal of markers is to …
 You can install the development version of markers like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+remotes::install_github("heike/markers")
 ```
 
 ## Example

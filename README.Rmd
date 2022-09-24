@@ -26,7 +26,7 @@ The goal of markers is to ...
 You can install the development version of markers like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+remotes::install_github("heike/markers")
 ```
 
 ## Example
@@ -75,11 +75,9 @@ do.call(marrangeGrob, list(reps$plot[1:8], nrow=4, ncol=2))
 
 
 ml = do.call(marrangeGrob, list(reps$plot, nrow=4, ncol=2))
-ggsave("figures/multipage.pdf", ml)       
+ggsave(plot=ml, filename="figures/multipage.pdf")       
 ```
 Download [pdf](multipage.pdf) with multiple pages of figures.
-
-From Maria (Aug 2022)
 
 The steps so far are: 
 
@@ -94,7 +92,6 @@ for (file in stls) {
   x3p <- stl_to_x3p(stl_tool)
   x3p %>% x3p_write(file = gsub(".stl", ".x3p", file)) # not that this will re-name EVERY x3p by stl, i.e. no need to deal with stl_files to x3p_files separately
 }
-
 ```
 
 2. Function `assert_name_pattern(files, pattern)` checks all file names in vector `files` for compliance with the pattern given in `pattern`. 
