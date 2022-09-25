@@ -136,7 +136,7 @@ Some of the alignments need to be re-done, e.g.:
 
 ### Tool 2L
 
-```{r, fig.keep='all', out.width='.5\textwidth'}
+```{r, fig.keep='all', out.width='.5\textwidth', eval=FALSE}
 aligned %>% 
   filter(tool == "02", size=="L", side=="A") %>%
   ggplot(aes(x = x, y = aligned)) +
@@ -155,7 +155,7 @@ aligned %>%
 
 ```
 
-```{r}
+```{r, fig.keep='all', fig.cap="Alignment of 2L-A by angle."}
 long <- 
   toolmarks %>%
   mutate(
@@ -174,13 +174,152 @@ long <-
   )
 long$aligned[[1]] %>% 
   ggplot(aes(x = x, y = aligned)) +
-  geom_line(aes(colour = mark_angle_direction))
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
 long$aligned[[2]] %>% 
   ggplot(aes(x = x, y = aligned)) +
-  geom_line(aes(colour = mark_angle_direction))
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
 long$aligned[[3]] %>% 
   ggplot(aes(x = x, y = aligned)) +
-  geom_line(aes(colour = mark_angle_direction))
-
-
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
 ```
+Signature from 4-60-Fo seems like it was reversed. 
+
+```{r}
+long <- 
+  toolmarks %>%
+  mutate(
+    mark_angle_direction =
+      sprintf("%s-%s-%s",mark,angle,direction)
+  ) %>%
+  filter(tool == "02", side=="A", size=="L")
+
+long <- long %>% arrange(x) %>% 
+  group_by(mark_angle_direction) %>%
+  mutate(
+    x = ifelse(mark_angle_direction=="4-60-Fo", -x, x)
+  )
+
+long <- long %>% arrange(x)
+
+long <- long %>%
+  group_by(angle) %>% tidyr::nest() %>%
+  mutate(
+    aligned = data %>% purrr::map(
+      .f = function(d) {
+        d %>%  sig_align_set(value = signature,  
+                group = mark_angle_direction)
+      }
+    )    
+  )
+
+long$aligned[[1]] %>% 
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
+```
+
+Once the signature 4-60-Fo is reversed, all signatures of tool T01L edge A can be aligned in one go across angles. 
+
+```{r}
+long <- long %>% select(-aligned) %>%
+  tidyr::unnest(col=data)
+
+
+long <- long %>% sig_align_set(value = signature,  
+                group = mark_angle_direction)
+
+long %>% 
+  separate(mark_angle_direction, 
+           into=c("mark","angle", "direction"), 
+           remove = FALSE) %>%
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw() +
+  facet_grid(angle~.)
+```
+
+
+```{r, fig.keep='all', fig.cap="Alignment of 2L-B by angle."}
+long <- 
+  toolmarks %>%
+  mutate(
+    mark_angle_direction =
+      sprintf("%s-%s-%s",mark,angle,direction)
+  ) %>%
+  filter(tool == "02", side=="B", size=="L") %>%
+  group_by(angle) %>% tidyr::nest() %>%
+  mutate(
+    aligned = data %>% purrr::map(
+      .f = function(d) {
+        d %>%  sig_align_set(value = signature,  
+                group = mark_angle_direction)
+      }
+    )    
+  )
+long <- long %>% arrange(angle)
+long$aligned[[1]] %>% 
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
+long$aligned[[2]] %>% 
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
+long$aligned[[3]] %>% 
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
+```
+
+One signature (mark = 3) under a 60 degree angle is not aligned properly. 
+
+```{r}
+long$aligned[[1]] <- long$aligned[[1]] %>% 
+  mutate(
+    x = ifelse(mark_angle_direction=="3-60-Fo",x+130,x)
+  )
+long$aligned[[1]] %>% 
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
+```
+
+
+### Tool 3L
+
+```{r}
+long <- 
+  toolmarks %>%
+  mutate(
+    mark_angle_direction =
+      sprintf("%s-%s-%s",mark,angle,direction)
+  ) %>%
+  filter(tool == "03", side=="A", size=="L") %>%
+  group_by(angle) %>% tidyr::nest() %>%
+  mutate(
+    aligned = data %>% purrr::map(
+      .f = function(d) {
+        d %>%  sig_align_set(value = signature,  
+                group = mark_angle_direction)
+      }
+    )    
+  )
+long <- long %>% arrange(angle)
+long$aligned[[1]] %>% 
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
+long$aligned[[2]] %>% 
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
+long$aligned[[3]] %>% 
+  ggplot(aes(x = x, y = aligned)) +
+  geom_line(aes(colour = mark_angle_direction)) +
+  theme_bw()
+```
+
+
