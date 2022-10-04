@@ -125,3 +125,6 @@ adding metadata –– So far I haven't run this code, so the x3p files don't ha
 One more point:
 - concatenating sides –– I'd like to start doing the whole analysis by using the signals from sides A and B of each tool concatenated. I think that is a more honest description of what the data are. That would have to be done after aligning, I think. 
 
+
+
+
