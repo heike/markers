@@ -170,7 +170,8 @@ long <-
     aligned = data %>% purrr::map(
       .f = function(d) {
         d %>%  sig_align_set(value = signature,  
-                group = mark_angle_direction)
+                group = mark_angle_direction, 
+                min.overlap = 500)
       }
     )    
   )
@@ -212,7 +213,8 @@ long <- long %>%
     aligned = data %>% purrr::map(
       .f = function(d) {
         d %>%  sig_align_set(value = signature,  
-                group = mark_angle_direction)
+                group = mark_angle_direction,
+                min.overlap = 500)
       }
     )    
   )
@@ -231,7 +233,8 @@ long <- long %>% select(-aligned) %>%
 
 
 long <- long %>% sig_align_set(value = signature,  
-                group = mark_angle_direction)
+                group = mark_angle_direction,
+                min.overlap = 500)
 
 long %>% 
   separate(mark_angle_direction, 
@@ -257,7 +260,8 @@ long <-
     aligned = data %>% purrr::map(
       .f = function(d) {
         d %>%  sig_align_set(value = signature,  
-                group = mark_angle_direction)
+                group = mark_angle_direction,
+                min.overlap = 500)
       }
     )    
   )
@@ -305,7 +309,8 @@ long <-
     aligned = data %>% purrr::map(
       .f = function(d) {
         d %>%  sig_align_set(value = signature,  
-                group = mark_angle_direction)
+                group = mark_angle_direction,
+                min.overlap = 500)
       }
     )    
   )
