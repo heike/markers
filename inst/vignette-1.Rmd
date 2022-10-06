@@ -9,7 +9,9 @@ fig_caption: yes
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  echo = FALSE
+  echo = FALSE,
+  fig.width = 8,
+  fig.height = 4
 )
 library(tidyverse)
 library(markers)
@@ -85,7 +87,7 @@ For the marks of each tool edge, make sure that the alignment worked and we have
 
 Generally: marks with signatures above a value of 0.01 seem to suffer from outliers along the boundaries of the profile. It would be helpful for the analysis to re-do  the signature extraction for these profiles (e.g. tool 1S, edge A, mark 2, backwards direction).
 
-```{r eval=FALSE, echo=FALSE}
+```{r eval=FALSE, echo=FALSE, fig.width = 8, fig.height = 10}
 align_all <- align_all %>% 
   mutate(
     plot = aligned %>% purrr::map(
@@ -106,7 +108,7 @@ for (i in 1:nrow(align_all)) {
 library(gridExtra)
 
 ml = do.call(marrangeGrob, list(align_all$plot, nrow=4, ncol=2))
-ggsave(plot=ml, filename="aligned.pdf")       
+ggsave(plot=ml, filename="aligned.pdf", width = 16, height = 20)       
 
 aligned <- align_all %>% select(-data, -plot) %>% 
   unnest(col = aligned)
