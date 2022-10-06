@@ -39,27 +39,23 @@
 #'   geom_line() +
 #'   facet_grid(angle~., labeller="label_both")
 #'
-sig_align_set <- function(data, value, group) {
+sig_align_set <- function (data, value, group) {
   group <- enquo(group)
   value <- enquo(value)
-
   dlist <- data %>% group_by(!!group) %>% tidyr::nest()
-
-  dlist <- dlist %>% mutate(
-    aligned = data %>% purrr::map(.f = function(d) {
-      aligned <- bulletxtrctr::sig_align(dlist$data[[1]] %>% select(!!value) %>% pull,
-                                         d %>% select(!!value) %>% pull)
-      aligned$lands %>% mutate(
-        lag = aligned$lag
-      ) %>% select(x, lag, aligned = sig2)
-    })
-  )
-
+  dlist <- dlist %>% mutate(aligned = data %>% purrr::map(.f = function(d) {
+    aligned <- bulletxtrctr::sig_align(dlist$data[[1]] %>%
+                                         select(!!value) %>% pull, d %>% select(!!value) %>%
+                                         pull)
+    #   browser()
+    sig1_one <- 0
+    idx <- which(!is.na(aligned$lands$sig1))
+    if(length(idx) >= 1)
+      sig1_one <- idx[1] - 1 # in which position do we have the first non-missing value in sig1?
+    aligned$lands %>% mutate(x = x - sig1_one) %>% select(x, aligned = sig2)
+  }))
   long <- dlist %>% unnest(cols = aligned)
-  long <- long %>% mutate(
-    lag = pmax(lag, 0), x = x - lag) %>% select(-lag)
   long
 }
-
 
 
