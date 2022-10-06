@@ -38,17 +38,17 @@ load("data/toolmarks.RData")
 ``` r
 library(tidyverse)
 #> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-#> ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-#> ✔ tibble  3.1.8     ✔ dplyr   1.0.9
-#> ✔ tidyr   1.2.0     ✔ stringr 1.4.1
-#> ✔ readr   2.1.2     ✔ forcats 0.5.1
+#> ✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
+#> ✔ tibble  3.1.8      ✔ dplyr   1.0.10
+#> ✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+#> ✔ readr   2.1.3      ✔ forcats 0.5.1 
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
 reps <- toolmarks %>% group_by(tool, plate, side, angle, direction, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
-  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark)
+  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
 )
 ```
 
@@ -82,13 +82,11 @@ do.call(marrangeGrob, list(reps$plot[1:8], nrow=4, ncol=2))
 
 
 ml = do.call(marrangeGrob, list(reps$plot, nrow=4, ncol=2))
-ggsave("figures/multipage.pdf", ml)       
+ggsave(plot=ml, filename="figures/multipage.pdf")       
 #> Saving 7 x 10 in image
 ```
 
 Download [pdf](multipage.pdf) with multiple pages of figures.
-
-From Maria (Aug 2022)
 
 The steps so far are:
 

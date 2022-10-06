@@ -39,14 +39,14 @@
 #'   geom_line() +
 #'   facet_grid(angle~., labeller="label_both")
 #'
-sig_align_set <- function (data, value, group) {
+sig_align_set <- function (data, value, group, min.overlap) {
   group <- enquo(group)
   value <- enquo(value)
   dlist <- data %>% group_by(!!group) %>% tidyr::nest()
   dlist <- dlist %>% mutate(aligned = data %>% purrr::map(.f = function(d) {
     aligned <- bulletxtrctr::sig_align(dlist$data[[1]] %>%
                                          select(!!value) %>% pull, d %>% select(!!value) %>%
-                                         pull)
+                                         pull, min.overlap = min.overlap)
     #   browser()
     sig1_one <- 0
     idx <- which(!is.na(aligned$lands$sig1))

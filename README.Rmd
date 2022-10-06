@@ -51,7 +51,7 @@ library(tidyverse)
 reps <- toolmarks %>% group_by(tool, plate, side, angle, direction, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
-  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark)
+  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
 )
 ```
 
