@@ -48,7 +48,7 @@ load("data/toolmarks.RData")
 
 ```{r}
 library(tidyverse)
-reps <- toolmarks %>% group_by(tool, plate, side, angle, direction, size) %>%
+reps <- toolmarks %>% group_by(tool, side, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
   aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
@@ -59,7 +59,7 @@ reps <- reps %>% mutate(
 
 ```{r, warning=FALSE, fig.height=10}
 reps <- reps %>% 
-  unite("id", tool, plate, side, remove = FALSE) %>%
+  unite("id", tool, side, size, remove = FALSE) %>%
   mutate(
   plot = purrr::map2(aligned_set, id, .f = function(d, id) {
     gg <- d %>% ggplot(aes(x =x, y = aligned, colour = factor(mark))) + geom_line() +
@@ -69,6 +69,22 @@ reps <- reps %>%
     gg
   })
 )
+
+
+
+reps$aligned_set[[3]] %>% summary()
+reps$aligned_set[[3]] %>% names()
+reps[3,]
+
+library(readr)
+saveRDS(reps, "data/reps.rds")
+
+reps <- readRDS("data/reps.rds")
+
+
+reps %>% tibble::view()
+
+
 
 library(gridExtra)
 do.call(marrangeGrob, list(reps$plot[1:8], nrow=4, ncol=2))
@@ -108,4 +124,7 @@ adding metadata –– So far I haven't run this code, so the x3p files don't ha
 
 One more point:
 - concatenating sides –– I'd like to start doing the whole analysis by using the signals from sides A and B of each tool concatenated. I think that is a more honest description of what the data are. That would have to be done after aligning, I think. 
+
+
+
 
