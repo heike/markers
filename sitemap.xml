@@ -19,10 +19,16 @@
     <loc>/reference/assert_name_pattern.html</loc>
   </url>
   <url>
+    <loc>/reference/cc_get_signature.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sig_align.html</loc>
   </url>
   <url>
     <loc>/reference/sig_align_set.html</loc>
