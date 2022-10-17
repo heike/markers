@@ -4,7 +4,7 @@
 \alias{sig_align_set}
 \title{Align signatures}
 \usage{
-sig_align_set(data, value, group)
+sig_align_set(data, value, group, min.overlap)
 }
 \arguments{
 \item{data}{data frame with id, signatures and grouping}

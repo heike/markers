@@ -52,7 +52,10 @@ sig_align_set <- function (data, value, group, min.overlap) {
     idx <- which(!is.na(aligned$lands$sig1))
     if(length(idx) >= 1)
       sig1_one <- idx[1] - 1 # in which position do we have the first non-missing value in sig1?
-    aligned$lands %>% mutate(x = x - sig1_one) %>% select(x, aligned = sig2)
+    aligned$lands %>%
+      mutate(x = x - sig1_one,
+             ccf = aligned$ccf) %>%
+      select(x, aligned = sig2, ccf)
   }))
   long <- dlist %>% unnest(cols = aligned)
   long
