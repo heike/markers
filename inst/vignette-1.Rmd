@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   fig.height = 4
 )
 library(tidyverse)
-library(markers)
+#library(markers)
 ```
 
 # Experimental Setup

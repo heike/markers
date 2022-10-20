@@ -71,6 +71,10 @@ reps <- reps %>%
 )
 
 
+str(reps)
+names(reps)
+table(reps$)
+
 
 reps$aligned_set[[3]] %>% summary()
 reps$aligned_set[[3]] %>% names()
