@@ -70,10 +70,40 @@ reps <- reps %>%
   })
 )
 
+marks_01_A_S <- reps %>% filter(tool==01, side=="A", size=="S")
+
+length(reps$data)
+
+dim(reps$data[[1]])
+
+table(reps$data[[1]]$direction)
+table(reps$data[[2]]$direction)
+
+
+table(reps$data[[3]]$angle)
+
+
+reps$data[[3]]$angle
+
+
+
+dim(marks_01_A_S$data[1])
+
 
 str(reps)
 names(reps)
-table(reps$)
+
+
+
+
+table(reps$tool)
+table(reps$side)
+table(reps$size)
+
+reps$data[[1]]$y
+
+reps$
+
 
 
 reps$aligned_set[[3]] %>% summary()

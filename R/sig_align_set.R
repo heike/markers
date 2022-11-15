@@ -39,7 +39,7 @@
 #'   geom_line() +
 #'   facet_grid(angle~., labeller="label_both")
 #'
-sig_align_set <- function (data, value, group, min.overlap) {
+sig_align_set <- function (data, value, group, min.overlap=500) {
   group <- enquo(group)
   value <- enquo(value)
   dlist <- data %>% group_by(!!group) %>% tidyr::nest()
