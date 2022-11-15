@@ -66,6 +66,7 @@
 <div class="page-header"><h1 id="markers">markers<a class="anchor" aria-label="anchor" href="#markers"></a>
 </h1></div>
 <!-- badges: start -->
+
 <p>The goal of markers is to …</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -81,10 +82,14 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/heike/markers" class="external-link">markers</a></span><span class="op">)</span></span>
 <span><span class="co">## basic example code</span></span></code></pre></div>
-<ol style="list-style-type: decimal"><li>Load toolmarks</li></ol>
+<ol style="list-style-type: decimal">
+<li>Load toolmarks</li>
+</ol>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"data/toolmarks.RData"</span><span class="op">)</span></span></code></pre></div>
-<ol start="2" style="list-style-type: decimal"><li>Align by set</li></ol>
+<ol start="2" style="list-style-type: decimal">
+<li>Align by set</li>
+</ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──</span></span>
@@ -100,7 +105,9 @@
 <span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">reps</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">mutate</span><span class="op">(</span></span>
 <span>  aligned_set <span class="op">=</span> <span class="va">data</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">sig_align_set</span>, value<span class="op">=</span><span class="va">signature</span>, group <span class="op">=</span> <span class="va">mark</span>, min.overlap <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<ol start="3" style="list-style-type: decimal"><li>Visualize</li></ol>
+<ol start="3" style="list-style-type: decimal">
+<li>Visualize</li>
+</ol>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">reps</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">unite</span><span class="op">(</span><span class="st">"id"</span>, <span class="va">tool</span>, <span class="va">plate</span>, <span class="va">side</span>, remove <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
@@ -130,7 +137,9 @@
 <span><span class="co">#&gt; Saving 7 x 10 in image</span></span></code></pre></div>
 <p>Download <a href="multipage.pdf">pdf</a> with multiple pages of figures.</p>
 <p>The steps so far are:</p>
-<ol style="list-style-type: decimal"><li>Convert stl files to x3p files and save in an appropriate folder</li></ol>
+<ol style="list-style-type: decimal">
+<li>Convert stl files to x3p files and save in an appropriate folder</li>
+</ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span>pattern<span class="op">=</span><span class="st">"stl"</span>, path<span class="op">=</span><span class="st">"data/stl_files"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -140,7 +149,9 @@
 <span>  <span class="va">x3p</span> <span class="op">&lt;-</span> <span class="fu">stl_to_x3p</span><span class="op">(</span><span class="va">stl_tool</span><span class="op">)</span></span>
 <span>  <span class="va">x3p</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">x3p_write</span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">".stl"</span>, <span class="st">".x3p"</span>, <span class="va">file</span><span class="op">)</span><span class="op">)</span> <span class="co"># not that this will re-name EVERY x3p by stl, i.e. no need to deal with stl_files to x3p_files separately</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<ol start="2" style="list-style-type: decimal"><li>Function <code>assert_name_pattern(files, pattern)</code> checks all file names in vector <code>files</code> for compliance with the pattern given in <code>pattern</code>.</li></ol>
+<ol start="2" style="list-style-type: decimal">
+<li>Function <code>assert_name_pattern(files, pattern)</code> checks all file names in vector <code>files</code> for compliance with the pattern given in <code>pattern</code>.</li>
+</ol>
 <ul>
 <li><p>signature extraction – I’m just filtering the signal from a set value of x to another. I bet this makes it so we lose some of the signal, but it’s simple. adding metadata –– So far I haven’t run this code, so the x3p files don’t have the correct metadata. Nina made a spreadsheet with this information, so all it would take is to run it, but it’s slow.</p></li>
 <li><p>aligning signatures –– I’m still doing this my initial way instead of using your “markers” way because I added a piece in which all marks are the same length, 900 points, with NA fillers on either side. I figured this would make modeling easier. One thing I haven’t done is to align the signals based on two criteria: the subset by tool (marks at different angles) and then by angle. When I tried aligning the marks made at different angles the alignment didn’t look good.</p></li>
