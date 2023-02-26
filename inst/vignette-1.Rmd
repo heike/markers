@@ -3,6 +3,7 @@ title: "Vignette Title"
 author: "Maria Cuellar & Heike Hofmann"
 date: "`r Sys.Date()`"
 fig_caption: yes
+bibliography: references.bib
 ---
 
 ```{r setup, include = FALSE}
@@ -57,9 +58,9 @@ if (file.exists("aligned_signatures.rds")) {
     group_by(tool, size, side) %>% 
     tidyr::nest() %>%
     mutate(
-      aligned = data %>% purrr::map(
+      data = data %>% purrr::map(
         .f = function(d) {
-          sig_align_set(d, value = signature,  group = mark_angle_direction)
+          sig_align_set(d, value = signature,  group = mark_angle_direction, min.overlap=250)
         }
       )
     )
@@ -72,27 +73,27 @@ if (file.exists("aligned_signatures.rds")) {
 | ![](images/01-A-S.png) | ![](images/01-B-S.png) |
 
 ```{r, fig.cap="Sides A and B of tool 1S", fig.keep='all', out.width='0.5\textwidth', eval=FALSE}
-align_all$aligned[[1]] %>% ggplot(aes(x =x, y = aligned)) + 
+align_all$data[[1]] %>% ggplot(aes(x = aligned_x, y = signature)) + 
   geom_line(aes(colour = mark_angle_direction)) +
   ggtitle(paste(align_all[1,1:3], sep="-", collapse="-"))
 
-align_all$aligned[[2]] %>% ggplot(aes(x =x, y = aligned)) + 
+align_all$data[[2]] %>% ggplot(aes(x = aligned_x, y = signature)) + 
   geom_line(aes(colour = mark_angle_direction)) +
-  ggtitle(paste(align_all[2,1:3], sep="-", collapse="-"))
+  ggtitle(paste(align_all[1,1:3], sep="-", collapse="-"))
 ```
 
 ## Quality control
 
 For the marks of each tool edge, make sure that the alignment worked and we have good marks. The result is included in [aligned.pdf](aligned.pdf).
 
-Generally: marks with signatures above a value of 0.01 seem to suffer from outliers along the boundaries of the profile. It would be helpful for the analysis to re-do  the signature extraction for these profiles (e.g. tool 1S, edge A, mark 2, backwards direction).
+Generally: marks with signatures above a value of 0.01 seem to suffer from outliers along the boundaries of the profile. It would be helpful for the analysis to re-do the signature extraction for these profiles (e.g. tool 1S, edge A, mark 2, backwards direction).
 
 ```{r eval=FALSE, echo=FALSE, fig.width = 8, fig.height = 10}
 align_all <- align_all %>% 
   mutate(
-    plot = aligned %>% purrr::map(
+    plot = data %>% purrr::map(
       .f = function(data) {
-        data %>% ggplot(aes(x =x, y = aligned)) + 
+        data %>% ggplot(aes(x = aligned_x, y = signature)) + 
   geom_line(aes(colour = mark_angle_direction)) +
           theme_bw() + 
           theme(legend.position="none")
@@ -110,21 +111,18 @@ library(gridExtra)
 ml = do.call(marrangeGrob, list(align_all$plot, nrow=4, ncol=2))
 ggsave(plot=ml, filename="aligned.pdf", width = 16, height = 20)       
 
-aligned <- align_all %>% select(-data, -plot) %>% 
-  unnest(col = aligned)
-aligned <- aligned %>% select(-data)
+aligned <- align_all %>% select(-plot) %>% 
+  unnest(col = data)
 saveRDS(aligned, file="toolmarks-aligned.rds")
 ```
 
-
-For tool 1S above, we see that edge B is aligned well across all scans. Edge A seems also be aligned well, however, we see that there are two main patterns in the  extracted signatures. From the image below we see that these two main patterns can be explained by the directionality of making the mark:
+For tool 1S above, we see that edge B is aligned well across all scans. Edge A seems also be aligned well, however, we see that there are two main patterns in the extracted signatures. From the image below we see that these two main patterns can be explained by the directionality of making the mark:
 
 ```{r}
 aligned <- readRDS("toolmarks-aligned.rds")
-aligned <- aligned %>% separate(mark_angle_direction, into=c("mark", "angle", "direction"), remove=FALSE)
 aligned %>% 
   filter(tool=="01", side=="A", size=="S") %>%
-  ggplot(aes(x =x, y = aligned, colour = mark_angle_direction)) +
+  ggplot(aes(x =aligned_x, y = signature, colour = mark_angle_direction)) +
   geom_line() + facet_grid(.~direction) +
   theme_bw() +
   theme(legend.position = "none") +
@@ -141,7 +139,7 @@ Some of the alignments need to be re-done, e.g.:
 ```{r, fig.keep='all', out.width='.5\textwidth', eval=FALSE}
 aligned %>% 
   filter(tool == "02", size=="L", side=="A") %>%
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw() +
   ggtitle("Tool 2L-A") +
@@ -149,7 +147,7 @@ aligned %>%
 
 aligned %>% 
   filter(tool == "02", size=="L", side=="B") %>%
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw() +
   ggtitle("Tool 2L-B") +
@@ -176,19 +174,20 @@ long <-
     )    
   )
 long$aligned[[1]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 long$aligned[[2]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 long$aligned[[3]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 ```
-Signature from 4-60-Fo seems like it was reversed. 
+
+Signature from 4-60-Fo seems like it was reversed.
 
 ```{r}
 long <- 
@@ -220,12 +219,12 @@ long <- long %>%
   )
 
 long$aligned[[1]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 ```
 
-Once the signature 4-60-Fo is reversed, all signatures of tool T01L edge A can be aligned in one go across angles. 
+Once the signature 4-60-Fo is reversed, all signatures of tool T01L edge A can be aligned in one go across angles.
 
 ```{r}
 long <- long %>% select(-aligned) %>%
@@ -237,15 +236,11 @@ long <- long %>% sig_align_set(value = signature,
                 min.overlap = 500)
 
 long %>% 
-  separate(mark_angle_direction, 
-           into=c("mark","angle", "direction"), 
-           remove = FALSE) %>%
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw() +
   facet_grid(angle~.)
 ```
-
 
 ```{r, fig.keep='all', fig.cap="Alignment of 2L-B by angle."}
 long <- 
@@ -267,32 +262,31 @@ long <-
   )
 long <- long %>% arrange(angle)
 long$aligned[[1]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 long$aligned[[2]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 long$aligned[[3]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 ```
 
-One signature (mark = 3) under a 60 degree angle is not aligned properly. 
+One signature (mark = 3) under a 60 degree angle is not aligned properly.
 
 ```{r}
 long$aligned[[1]] <- long$aligned[[1]] %>% 
   mutate(
-    x = ifelse(mark_angle_direction=="3-60-Fo",x+130,x)
+    aligned_x = ifelse(mark_angle_direction=="3-60-Fo",aligned_x+130,aligned_x)
   )
 long$aligned[[1]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 ```
-
 
 ### Tool 3L
 
@@ -316,17 +310,15 @@ long <-
   )
 long <- long %>% arrange(angle)
 long$aligned[[1]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 long$aligned[[2]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 long$aligned[[3]] %>% 
-  ggplot(aes(x = x, y = aligned)) +
+  ggplot(aes(x = aligned_x, y = signature)) +
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 ```
-
-

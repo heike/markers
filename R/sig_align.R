@@ -28,6 +28,9 @@ sig_align <- function (sig1, sig2, min.overlap = round(0.75 * min(length(sig1),
       x <- sig2
       y <- sig1
     }
+    # make sure that the minimal overlap is adjusted in case it is larger than
+    # either n1 or n2
+    if (min.overlap > n1 | min.overlap > n2) min.overlap <- min(c(n1,n2))
     cors <- bulletxtrctr::get_ccf(x, y, min.overlap = min.overlap)
     lag <- cors$lag[which.max(cors$ccf)]
     if (lag < 0) {

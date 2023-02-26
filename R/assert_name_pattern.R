@@ -5,6 +5,7 @@
 #' file names will be shown.
 #' @param file (vector of) file name(s)
 #' @param pattern format for a study, generally in regular expression. See e.g. \url{https://regexr.com/} for help in creating suitable patterns
+#' @param verbose logical value whether function chatters for re-assurance when things works. Defaults to FALSE.
 #' @return vector of indices of files that don't pass the check
 #' @export
 #' @examples

@@ -13,6 +13,8 @@ cc_get_signature(ccdata, span1 = 125, span2 = 5, resolution = 0.645)
 signature}
 
 \item{span2}{The span for the loess fit to smooth the raw signature}
+
+\item{resolution}{numeric value of  the scan resolution, see \code{x3ptools::x3p_get_scale}.}
 }
 \value{
 data frame
@@ -25,6 +27,6 @@ crosscut y,
 x3p <- x3p_read("~/Documents/CSAFE/Wirecutter/data/Aluminum Wires renamed/T1AW-LI-R1-B01.x3p")
 line1 <- x3p \%>\% x3p_extract_profile()
 line1 <- line1$line_df
-signature <- cc_get_signature(line1)
+signature <- cc_get_signature(line1, resolution = x3p \%>\% x3p_get_scale())
 
 }

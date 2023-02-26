@@ -46,18 +46,18 @@ load("data/toolmarks.RData")
 
 2. Align by set
 
-```{r}
+```{r eval=FALSE}
 library(tidyverse)
 reps <- toolmarks %>% group_by(tool, side, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
-  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
+  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 1000)
 )
 ```
 
 3. Visualize
 
-```{r, warning=FALSE, fig.height=10}
+```{r, eval=FALSE, warning=FALSE, fig.height=10}
 reps <- reps %>% 
   unite("id", tool, side, size, remove = FALSE) %>%
   mutate(
@@ -72,9 +72,9 @@ reps <- reps %>%
 
 
 
-reps$aligned_set[[3]] %>% summary()
-reps$aligned_set[[3]] %>% names()
-reps[3,]
+#reps$aligned_set[[3]] %>% summary()
+#reps$aligned_set[[3]] %>% names()
+#reps[3,]
 
 library(readr)
 saveRDS(reps, "data/reps.rds")
@@ -82,7 +82,7 @@ saveRDS(reps, "data/reps.rds")
 reps <- readRDS("data/reps.rds")
 
 
-reps %>% tibble::view()
+
 
 
 

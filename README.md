@@ -24,6 +24,8 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(markers)
+#> Warning: replacing previous import 'dplyr::lag' by 'stats::lag' when loading
+#> 'markers'
 ## basic example code
 ```
 
@@ -37,18 +39,10 @@ load("data/toolmarks.RData")
 
 ``` r
 library(tidyverse)
-#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-#> ✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
-#> ✔ tibble  3.1.8      ✔ dplyr   1.0.10
-#> ✔ tidyr   1.2.1      ✔ stringr 1.4.1 
-#> ✔ readr   2.1.3      ✔ forcats 0.5.1 
-#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-#> ✖ dplyr::filter() masks stats::filter()
-#> ✖ dplyr::lag()    masks stats::lag()
-reps <- toolmarks %>% group_by(tool, plate, side, angle, direction, size) %>%
+reps <- toolmarks %>% group_by(tool, side, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
-  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
+  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 2500)
 )
 ```
 
@@ -56,7 +50,7 @@ reps <- reps %>% mutate(
 
 ``` r
 reps <- reps %>% 
-  unite("id", tool, plate, side, remove = FALSE) %>%
+  unite("id", tool, side, size, remove = FALSE) %>%
   mutate(
   plot = purrr::map2(aligned_set, id, .f = function(d, id) {
     gg <- d %>% ggplot(aes(x =x, y = aligned, colour = factor(mark))) + geom_line() +
@@ -67,23 +61,28 @@ reps <- reps %>%
   })
 )
 
+
+
+#reps$aligned_set[[3]] %>% summary()
+#reps$aligned_set[[3]] %>% names()
+#reps[3,]
+
+library(readr)
+saveRDS(reps, "data/reps.rds")
+
+reps <- readRDS("data/reps.rds")
+
+
+
+
+
+
 library(gridExtra)
-#> 
-#> Attaching package: 'gridExtra'
-#> The following object is masked from 'package:dplyr':
-#> 
-#>     combine
 do.call(marrangeGrob, list(reps$plot[1:8], nrow=4, ncol=2))
-```
-
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
-
-``` r
 
 
 ml = do.call(marrangeGrob, list(reps$plot, nrow=4, ncol=2))
 ggsave(plot=ml, filename="figures/multipage.pdf")       
-#> Saving 7 x 10 in image
 ```
 
 Download [pdf](multipage.pdf) with multiple pages of figures.

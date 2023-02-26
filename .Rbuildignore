@@ -4,4 +4,4 @@
 ^README\.Rmd$
 ^\.github$
 ^aligned_signatures.rds$
-^reps.rds$
+^.*\.rds$

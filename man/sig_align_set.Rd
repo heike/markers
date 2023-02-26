@@ -7,42 +7,55 @@
 sig_align_set(data, value, group, min.overlap)
 }
 \arguments{
-\item{data}{data frame with id, signatures and grouping}
+\item{data}{data frame with id, signatures and grouping variable}
 
 \item{value}{symbol for the signature values}
 
-\item{group}{symbol for grouping}
+\item{group}{symbol (variable) for grouping}
+
+\item{min.overlap}{value passed on to \code{get_ccf}, see \code{bulletxtrctr::get_ccf}.}
 }
 \value{
-data frame
+data frame: the returned data frame has the same number of observations as the input,
+but has the additional variables \code{aligned_x} and \code{ccf}. Note that \code{aligned_x} is reported in integer values.
+For a conversion to the physical extent, scale by the resolution of the scan.
 }
 \description{
-Align pairwise across signatures.
+Align all signatures in the same group. All signatures in this group are aligned
+with respect to the first signature in a group.
+Alignments will vary depending on which signature is used as 'first'.
 }
 \examples{
 load("data/toolmarks.Rdata")
 toolmarks \%>\% group_by(tool, side, size) \%>\% summarize(angles = length(unique(angle)))
 tool1AL <- dplyr::filter(toolmarks, tool == "02", side=="A", size=="L")
 # Align all signatures in one go
-aligned <- tool1AL \%>\% mutate(mark_angle = interaction(mark, angle)) \%>\% sig_align_set(value = signature,  group = mark_angle)
+aligned <- tool1AL \%>\% mutate(mark_angle = interaction(mark, angle)) \%>\%
+  sig_align_set(value = signature,  group = mark_angle, min.overlap = 500)
+
+# Visualize the results:
+library(ggplot2)
 aligned \%>\%
-  ggplot(aes(x =x, y = aligned, colour = mark_angle)) +
+  ggplot(aes(x = aligned_x, y = signature, colour = mark_angle)) +
   geom_line()
-wide <- aligned \%>\% select(-data) \%>\% pivot_wider(values_from = aligned, names_from = mark_angle)
-heatmap(cor(wide[,-(1:2)], use="pairwise.complete"))
+# HH: mark 4.60 is still travelling in reversed direction
+
+wide <- aligned \%>\% select(aligned_x, signature, mark_angle) \%>\%
+   tidyr::pivot_wider(values_from = signature, names_from = mark_angle)
+heatmap(cor(wide \%>\% select(-aligned_x), use="pairwise.complete"))
 
 # Align signatures separately by angle
 long <- tool1AL \%>\% group_by(angle) \%>\% nest()
-long <- long \%>\% mutate(
-  aligned = data \%>\% purrr::map(.f = function(d) {
-    d \%>\% sig_align_set(value = signature,  group = mark)
+long <- long \%>\%  mutate(
+  data = data \%>\% purrr::map(.f = function(d) {
+    d \%>\% sig_align_set(value = signature,  group = mark, min.overlap=500)
   })
 )
-long$aligned[[1]] \%>\% ggplot(aes(x =x, y = aligned, colour = factor(mark))) + geom_line()
+long$data[[3]] \%>\% ggplot(aes(x = aligned_x, y = signature, colour = factor(mark))) + geom_line()
 
-long <- long \%>\% select(-data) \%>\% unnest(col=aligned)
+long <- long \%>\% unnest(col=data)
 long \%>\%
-  ggplot(aes(x =x, y = aligned, colour = factor(mark))) +
+  ggplot(aes(x =aligned_x, y = signature, colour = factor(mark))) +
   geom_line() +
   facet_grid(angle~., labeller="label_both")
 

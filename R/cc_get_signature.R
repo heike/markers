@@ -6,14 +6,16 @@
 #' @param span1 The span for the loess fit to get from the profile to the raw
 #'          signature
 #' @param span2 The span for the loess fit to smooth the raw signature
+#' @param resolution numeric value of  the scan resolution, see `x3ptools::x3p_get_scale`.
 #' @return data frame
 #' @import dplyr
+#' @importFrom smoother smth.gaussian
 #' @export
 #' @examples
 #' x3p <- x3p_read("~/Documents/CSAFE/Wirecutter/data/Aluminum Wires renamed/T1AW-LI-R1-B01.x3p")
 #' line1 <- x3p %>% x3p_extract_profile()
 #' line1 <- line1$line_df
-#' signature <- cc_get_signature(line1)
+#' signature <- cc_get_signature(line1, resolution = x3p %>% x3p_get_scale())
 #'
 cc_get_signature <- function (ccdata, span1 = 125, span2 = 5, resolution = 0.645)
 {

@@ -10,6 +10,8 @@ assert_name_pattern(file, pattern, verbose = FALSE)
 \item{file}{(vector of) file name(s)}
 
 \item{pattern}{format for a study, generally in regular expression. See e.g. \url{https://regexr.com/} for help in creating suitable patterns}
+
+\item{verbose}{logical value whether function chatters for re-assurance when things works. Defaults to FALSE.}
 }
 \value{
 vector of indices of files that don't pass the check
