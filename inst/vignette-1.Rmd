@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   fig.height = 4
 )
 library(tidyverse)
-library(markers)
+#library(markers)
 ```
 
 # Experimental Setup
@@ -66,7 +66,8 @@ if (file.exists("aligned_signatures.rds")) {
     )
   saveRDS(align_all, "aligned_signatures.rds")
 }
-```
+
+``` 
 
 | Tool 1S - Edge A       | **Tool 1S - Edge B**   |
 |------------------------|------------------------|
@@ -322,3 +323,49 @@ long$aligned[[3]] %>%
   geom_line(aes(colour = mark_angle_direction)) +
   theme_bw()
 ```
+
+
+```{r eval= FALSE}
+
+class(long)
+str(long)
+
+long$angle[1]
+long$aligned[[1]]
+
+head(long$aligned[[1]])
+
+head(long$aligned[[2]])
+
+table(long$aligned[[1]]$mark_angle_direction)
+table(long$aligned[[2]]$mark_angle_direction)
+table(long$aligned[[3]]$mark_angle_direction)
+
+long$aligned[[3]]$data
+  
+  
+
+
+
+
+df <- rbind(long$aligned[[1]]$data[[1]],
+      long$aligned[[2]]$data[[1]],
+      long$aligned[[3]]$data[[1]])
+
+dim(long$aligned[[1]]$data)
+table(long$aligned[[2]]$mark_angle_direction)
+table(long$aligned[[3]]$mark_angle_direction)
+
+dim(df)
+table(df$tool)
+
+names(df)
+table(df$tool)
+table(df$mark)
+
+```
+
+
+
+
+
