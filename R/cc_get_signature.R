@@ -10,6 +10,7 @@
 #' @return data frame
 #' @import dplyr
 #' @importFrom smoother smth.gaussian
+#' @importFrom stats var approx
 #' @export
 #' @examples
 #' if (interactive()) {

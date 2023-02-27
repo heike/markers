@@ -9,24 +9,24 @@ Depends: R (>= 3.5.0)
 Imports: 
   rlang (>= 1.0.3),
   magrittr (>= 2.0.3),
-  rgl (>= 0.109.6),
   rayshader (>= 0.24.10),
   purrr (>= 0.3.4),
   tidyr (>= 1.2.0),
   dplyr (>= 1.0.9),
-  x3ptools,
   smoother,
   assertthat,
   zoo,
   bulletxtrctr 
+Suggests:
+   ggplot2,
+   x3ptools
 Remotes: 
     heike/bulletxtrctr
     heike/x3ptools
-Suggests:
-   ggplot2
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://github.com/heike/markers
 BugReports: https://github.com/heike/markers/issues
+LazyData: true

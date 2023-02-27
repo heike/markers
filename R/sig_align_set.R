@@ -17,7 +17,7 @@
 #' @importFrom dplyr group_by mutate select pull lag
 #' @importFrom bulletxtrctr sig_align
 #' @examples
-#' load("data/toolmarks.RData")
+#' data(toolmarks)
 #' toolmarks %>% group_by(tool, side, size) %>% summarize(angles = length(unique(angle)))
 #' tool1AL <- dplyr::filter(toolmarks, tool == "02", side=="A", size=="L")
 #' # Align all signatures in one go

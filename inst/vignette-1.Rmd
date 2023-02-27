@@ -20,11 +20,11 @@ library(tidyverse)
 
 # Experimental Setup
 
-Data is stored on private repo, extracted signatures are available in `toolmarks.RData` file.
+Data is included (for now) as part of the package:
 
 ```{r, echo = TRUE}
 # loads object toolmarks
-load(here::here("data/toolmarks.RData"))
+data(toolmarks)
 ```
 
 Each signature is individualized by tool (1-20), size (S, M, L), mark (1-8), side (A,B), angle (60, 70, 80), direction (Fo/Ba)

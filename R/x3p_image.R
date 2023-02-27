@@ -6,8 +6,7 @@
 #' @param width size of window
 #' @param scale factor to scale the original matrix. Large matrices might crash your session.
 #' @param texture texture object. Create one with `rayshader::create_texture` or use one of the pre-made one (e.g. "bw", "imhof1", "imhof2", "imhof3", "unicorn", "desert")
-#' @importFrom rayshader plot_map resize_matrix
-#' @importFrom rgl plot3d
+#' @importFrom rayshader plot_map resize_matrix plot_3d sphere_shade
 #' @export
 x3p_image <- function(x3p, dimension = 3, width = 400, scale = 0.25, texture = "bw") {
   stopifnot("x3p" %in% class(x3p))

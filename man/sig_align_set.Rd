@@ -26,7 +26,7 @@ with respect to the first signature in a group.
 Alignments will vary depending on which signature is used as 'first'.
 }
 \examples{
-load("data/toolmarks.RData")
+data(toolmarks)
 toolmarks \%>\% group_by(tool, side, size) \%>\% summarize(angles = length(unique(angle)))
 tool1AL <- dplyr::filter(toolmarks, tool == "02", side=="A", size=="L")
 # Align all signatures in one go

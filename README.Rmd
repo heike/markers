@@ -41,7 +41,7 @@ library(markers)
 
 1. Load toolmarks
 ```{r}
-load("data/toolmarks.RData")
+data(toolmarks)
 ```
 
 2. Align by set
