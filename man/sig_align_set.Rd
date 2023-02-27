@@ -4,7 +4,7 @@
 \alias{sig_align_set}
 \title{Align signatures}
 \usage{
-sig_align_set(data, value, group, min.overlap)
+sig_align_set(data, value, group, min.overlap = 500)
 }
 \arguments{
 \item{data}{data frame with id, signatures and grouping variable}
@@ -26,7 +26,7 @@ with respect to the first signature in a group.
 Alignments will vary depending on which signature is used as 'first'.
 }
 \examples{
-load("data/toolmarks.Rdata")
+load("data/toolmarks.RData")
 toolmarks \%>\% group_by(tool, side, size) \%>\% summarize(angles = length(unique(angle)))
 tool1AL <- dplyr::filter(toolmarks, tool == "02", side=="A", size=="L")
 # Align all signatures in one go

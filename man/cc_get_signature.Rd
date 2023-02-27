@@ -24,9 +24,11 @@ x3p file of a 3d topological surface is processed at surface
 crosscut y,
 }
 \examples{
+if (interactive()) {
+library(x3ptools)
 x3p <- x3p_read("~/Documents/CSAFE/Wirecutter/data/Aluminum Wires renamed/T1AW-LI-R1-B01.x3p")
 line1 <- x3p \%>\% x3p_extract_profile()
 line1 <- line1$line_df
 signature <- cc_get_signature(line1, resolution = x3p \%>\% x3p_get_scale())
-
+}
 }

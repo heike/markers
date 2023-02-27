@@ -2,8 +2,8 @@ Package: markers
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    person("Heike", "Hofmann", , "hofmann@iastate.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6216-5183"))
 Description: Extract and compare signatures from three dimensional topographic scans of toolmarks.
 Depends: R (>= 3.5.0)
 Imports: 
@@ -14,12 +14,16 @@ Imports:
   purrr (>= 0.3.4),
   tidyr (>= 1.2.0),
   dplyr (>= 1.0.9),
+  x3ptools,
   smoother,
   assertthat,
   zoo,
   bulletxtrctr 
 Remotes: 
     heike/bulletxtrctr
+    heike/x3ptools
+Suggests:
+   ggplot2
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
