@@ -113,7 +113,7 @@ ml = do.call(marrangeGrob, list(align_all$plot, nrow=4, ncol=2))
 ggsave(plot=ml, filename="aligned.pdf", width = 16, height = 20)       
 
 aligned <- align_all %>% select(-plot) %>% 
-  unnest(col = data)
+  tidyr::unnest(col = data)
 saveRDS(aligned, file="toolmarks-aligned.rds")
 ```
 

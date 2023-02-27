@@ -26,6 +26,7 @@ with respect to the first signature in a group.
 Alignments will vary depending on which signature is used as 'first'.
 }
 \examples{
+library(dplyr)
 data(toolmarks)
 toolmarks \%>\% group_by(tool, side, size) \%>\% summarize(angles = length(unique(angle)))
 tool1AL <- dplyr::filter(toolmarks, tool == "02", side=="A", size=="L")
@@ -45,7 +46,7 @@ wide <- aligned \%>\% select(aligned_x, signature, mark_angle) \%>\%
 heatmap(cor(wide \%>\% select(-aligned_x), use="pairwise.complete"))
 
 # Align signatures separately by angle
-long <- tool1AL \%>\% group_by(angle) \%>\% nest()
+long <- tool1AL \%>\% group_by(angle) \%>\% tidyr::nest()
 long <- long \%>\%  mutate(
   data = data \%>\% purrr::map(.f = function(d) {
     d \%>\% sig_align_set(value = signature,  group = mark, min.overlap=500)
@@ -53,7 +54,7 @@ long <- long \%>\%  mutate(
 )
 long$data[[3]] \%>\% ggplot(aes(x = aligned_x, y = signature, colour = factor(mark))) + geom_line()
 
-long <- long \%>\% unnest(col=data)
+long <- long \%>\% tidyr::unnest(col=data)
 long \%>\%
   ggplot(aes(x =aligned_x, y = signature, colour = factor(mark))) +
   geom_line() +
