@@ -21,7 +21,7 @@ Suggests:
    ggplot2,
    x3ptools
 Remotes: 
-    heike/bulletxtrctr
+    heike/bulletxtrctr,
     heike/x3ptools
 License: MIT + file LICENSE
 Encoding: UTF-8

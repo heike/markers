@@ -51,7 +51,7 @@ library(tidyverse)
 reps <- toolmarks %>% group_by(tool, side, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
-  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 1000)
+  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
 )
 ```
 
@@ -62,7 +62,7 @@ reps <- reps %>%
   unite("id", tool, side, size, remove = FALSE) %>%
   mutate(
   plot = purrr::map2(aligned_set, id, .f = function(d, id) {
-    gg <- d %>% ggplot(aes(x =x, y = aligned, colour = factor(mark))) + geom_line() +
+    gg <- d %>% ggplot(aes(x = aligned_x, y = signature, colour = factor(mark))) + geom_line() +
       theme_bw() + 
       ggtitle(id[1]) +
       theme(legend.position="none")
