@@ -1,5 +1,5 @@
 ---
-title: "Vignette Title"
+title: "Experimental Design"
 author: "Maria Cuellar & Heike Hofmann"
 date: "`r Sys.Date()`"
 fig_caption: yes

@@ -1,10 +1,10 @@
-Package: markers
-Title: What the Package Does (One Line, Title Case)
+Package: tmaRks
+Title: Compare Screwdriver Marks
 Version: 0.0.9000
 Authors@R: 
     person("Heike", "Hofmann", , "hofmann@iastate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6216-5183"))
-Description: Extract and compare signatures from three dimensional topographic scans of toolmarks.
+Description: Extract and compare signatures from three dimensional topographic scans of screwdriver marks.
 Depends: R (>= 3.5.0)
 Imports: 
   rlang (>= 1.0.3),
@@ -27,6 +27,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-URL: https://github.com/heike/markers
-BugReports: https://github.com/heike/markers/issues
+URL: https://github.com/heike/tmaRks
+BugReports: https://github.com/heike/tmaRks/issues
 LazyData: true

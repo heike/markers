@@ -13,20 +13,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-# markers
+# tmaRks
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of markers is to ...
+The goal of tmaRks is to ...
 
 ## Installation
 
-You can install the development version of markers like so:
+You can install the development version of tmaRks like so:
 
 ``` r
-remotes::install_github("heike/markers")
+remotes::install_github("heike/tmaRks")
 ```
 
 ## Example
@@ -34,7 +34,7 @@ remotes::install_github("heike/markers")
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-library(markers)
+library(tmaRks)
 ## basic example code
 ```
 
@@ -152,7 +152,7 @@ adding metadata –– So far I haven't run this code, so the x3p files don't ha
 
 
 
-- aligning signatures –– I'm still doing this my initial way instead of using your "markers" way because I added a piece in which all marks are the same length, 900 points, with NA fillers on either side. I figured this would make modeling easier. One thing I haven't done is to align the signals based on two criteria: the subset by tool (marks at different angles) and then by angle. When I tried aligning the marks made at different angles the alignment didn't look good.
+- aligning signatures –– I'm still doing this my initial way instead of using your "tmaRks" way because I added a piece in which all marks are the same length, 900 points, with NA fillers on either side. I figured this would make modeling easier. One thing I haven't done is to align the signals based on two criteria: the subset by tool (marks at different angles) and then by angle. When I tried aligning the marks made at different angles the alignment didn't look good.
 - binning –– So far I've done this by choosing an arbitrary number of bins (18, so that each bin has 50 points in it). It would be nice if I could just change that number easily, e.g. b=22, and then the code would just run. The way it's written now it's way too dependent on the 18 bins.
 - modeling –– The main task here has been calculating means by tool, and then the variance across tools. I couldn't figure out how to do this in general so you'll see it's quite specific. 
 
