@@ -20,9 +20,10 @@ vector of indices of files that don't pass the check
 This function runs a list of file names through a pattern check. A warning
 will be returned in case not all file names pass the check. Offending
 file names will be shown.
+Maria: your specific pattern is defined as
+\verb{"^Sc\\\\d\\\\d\\\\.Pl\\\\d\\\\d\\\\d\\\\.Ma\\\\d\\\\.S[AB]\\\\.An\\\\d\\\\d\\\\.Pb\\\\.Dir(Fo|Ba)\\\\.\\\\Siz[SML](|.mid)\\\\.x3p$}
 }
 \examples{
-path <- "~/Documents/projects/toolmarks/data/x3p_files" # HH sorry for using absolute paths, Maria, you will need to exchange that with the path to the x3pfiles on your machine
-files <- dir(path, pattern="x3p", recursive = TRUE, full.names=FALSE)
-assert_name_pattern(files, pattern="^Sc\\\\d\\\\d\\\\.Pl\\\\d\\\\d\\\\d\\\\.Ma\\\\d\\\\.S[AB]\\\\.An\\\\d\\\\d\\\\.Pb\\\\.Dir(Fo|Ba)\\\\.\\\\Siz[SML](|.mid)\\\\.x3p$")
+files <- dir("data-raw", pattern=".x3p", recursive = TRUE, full.names=FALSE)
+assert_name_pattern(files, pattern="^T\\\\d\\\\d[SML][AB]-[FB][678]0-0[1-8].x3p$")
 }
