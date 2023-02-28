@@ -40,19 +40,21 @@ library(tmaRks)
 
 
 1. Load toolmarks
-```{r}
+```{r cache=FALSE}
 data(toolmarks)
+head(toolmarks)
 ```
 
 2. Align by set
 
-```{r eval=FALSE}
-library(tidyverse)
-reps <- toolmarks %>% group_by(tool, side, size) %>%
+```{r eval=TRUE}
+library(tidyverse, quietly = TRUE)
+
+reps <- toolmarks %>% filter(tool <= 3, size == "L") %>% group_by(tool, side, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
-  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
-)
+  data = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
+) %>% tidyr::unnest(cols=data)
 ```
 
 3. Visualize

@@ -30,3 +30,4 @@ RoxygenNote: 7.2.3
 URL: https://github.com/heike/tmaRks
 BugReports: https://github.com/heike/tmaRks/issues
 LazyData: true
+LazyDataCompression: xz

@@ -19,10 +19,10 @@
 #' @examples
 #' library(dplyr)
 #' data(toolmarks)
-#' toolmarks %>% group_by(tool, side, size) %>% summarize(angles = length(unique(angle)))
-#' tool1AL <- dplyr::filter(toolmarks, tool == "02", side=="A", size=="L")
+#' names(toolmarks)
+#' tool2AL <- dplyr::filter(toolmarks, tool == 2, side=="A", size=="L")
 #' # Align all signatures in one go
-#' aligned <- tool1AL %>% mutate(mark_angle = interaction(mark, angle)) %>%
+#' aligned <- tool2AL %>% mutate(mark_angle = interaction(mark, angle)) %>%
 #'   sig_align_set(value = signature,  group = mark_angle, min.overlap = 500)
 #'
 #' # Visualize the results:
@@ -37,7 +37,7 @@
 #' heatmap(cor(wide %>% select(-aligned_x), use="pairwise.complete"))
 #'
 #' # Align signatures separately by angle
-#' long <- tool1AL %>% group_by(angle) %>% tidyr::nest()
+#' long <- tool2AL %>% group_by(angle) %>% tidyr::nest()
 #' long <- long %>%  mutate(
 #'   data = data %>% purrr::map(.f = function(d) {
 #'     d %>% sig_align_set(value = signature,  group = mark, min.overlap=500)

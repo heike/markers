@@ -3,5 +3,5 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^\.github$
-^aligned_signatures.rds$
 ^.*\.rds$
+^data-raw$

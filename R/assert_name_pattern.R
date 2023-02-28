@@ -3,15 +3,16 @@
 #' This function runs a list of file names through a pattern check. A warning
 #' will be returned in case not all file names pass the check. Offending
 #' file names will be shown.
+#' Maria: your specific pattern is defined as
+#' `"^Sc\\d\\d\\.Pl\\d\\d\\d\\.Ma\\d\\.S[AB]\\.An\\d\\d\\.Pb\\.Dir(Fo|Ba)\\.\\Siz[SML](|.mid)\\.x3p$`
 #' @param file (vector of) file name(s)
 #' @param pattern format for a study, generally in regular expression. See e.g. \url{https://regexr.com/} for help in creating suitable patterns
 #' @param verbose logical value whether function chatters for re-assurance when things works. Defaults to FALSE.
 #' @return vector of indices of files that don't pass the check
 #' @export
 #' @examples
-#' path <- "~/Documents/projects/toolmarks/data/x3p_files" # HH sorry for using absolute paths, Maria, you will need to exchange that with the path to the x3pfiles on your machine
-#' files <- dir(path, pattern="x3p", recursive = TRUE, full.names=FALSE)
-#' assert_name_pattern(files, pattern="^Sc\\d\\d\\.Pl\\d\\d\\d\\.Ma\\d\\.S[AB]\\.An\\d\\d\\.Pb\\.Dir(Fo|Ba)\\.\\Siz[SML](|.mid)\\.x3p$")
+#' files <- dir("data-raw", pattern=".x3p", recursive = TRUE, full.names=FALSE)
+#' assert_name_pattern(files, pattern="^T\\d\\d[SML][AB]-[FB][678]0-0[1-8].x3p$")
 assert_name_pattern <- function(file, pattern, verbose = FALSE) {
   idx <- grep(pattern=pattern, file)
   no_match <- setdiff(1:length(file), idx)

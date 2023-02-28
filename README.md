@@ -1,21 +1,21 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# markers
+# tmaRks
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of markers is to …
+The goal of tmaRks is to …
 
 ## Installation
 
-You can install the development version of markers like so:
+You can install the development version of tmaRks like so:
 
 ``` r
-remotes::install_github("heike/markers")
+remotes::install_github("heike/tmaRks")
 ```
 
 ## Example
@@ -23,7 +23,12 @@ remotes::install_github("heike/markers")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(markers)
+library(tmaRks)
+#> 
+#> Attaching package: 'tmaRks'
+#> The following object is masked from 'package:utils':
+#> 
+#>     data
 ## basic example code
 ```
 
@@ -31,17 +36,39 @@ library(markers)
 
 ``` r
 data(toolmarks)
+head(toolmarks)
+#> # A tibble: 6 × 11
+#>    tool size  side  direction angle  mark TID            x     y   value signa…¹
+#>   <int> <chr> <chr> <chr>     <int> <int> <chr>      <dbl> <dbl>   <dbl>   <dbl>
+#> 1     1 S     A     F            80     1 T01SA-F80…  2.00  3.62 -0.0816 0.00195
+#> 2     1 S     A     F            80     1 T01SA-F80…  2.01  3.62 -0.0816 0.00193
+#> 3     1 S     A     F            80     1 T01SA-F80…  2.02  3.62 -0.0816 0.00184
+#> 4     1 S     A     F            80     1 T01SA-F80…  2.02  3.62 -0.0817 0.00173
+#> 5     1 S     A     F            80     1 T01SA-F80…  2.03  3.62 -0.0817 0.00166
+#> 6     1 S     A     F            80     1 T01SA-F80…  2.04  3.62 -0.0817 0.00157
+#> # … with abbreviated variable name ¹​signature
 ```
 
 2.  Align by set
 
 ``` r
 library(tidyverse)
-reps <- toolmarks %>% group_by(tool, side, size) %>%
+#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+#> ✔ ggplot2 3.4.1     ✔ purrr   1.0.1
+#> ✔ tibble  3.1.8     ✔ dplyr   1.1.0
+#> ✔ tidyr   1.3.0     ✔ stringr 1.5.0
+#> ✔ readr   2.1.4     ✔ forcats 0.5.2
+#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+#> ✖ dplyr::filter() masks stats::filter()
+#> ✖ dplyr::lag()    masks stats::lag()
+
+reps <- toolmarks %>% filter(tool <= 3, size == "L") %>% group_by(tool, side, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
-  aligned_set = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 1000)
-)
+  data = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
+) %>% tidyr::unnest()
+#> Warning: `cols` is now required when using `unnest()`.
+#> ℹ Please use `cols = c(data)`.
 ```
 
 3.  Visualize
@@ -51,7 +78,7 @@ reps <- reps %>%
   unite("id", tool, side, size, remove = FALSE) %>%
   mutate(
   plot = purrr::map2(aligned_set, id, .f = function(d, id) {
-    gg <- d %>% ggplot(aes(x =x, y = aligned, colour = factor(mark))) + geom_line() +
+    gg <- d %>% ggplot(aes(x = aligned_x, y = signature, colour = factor(mark))) + geom_line() +
       theme_bw() + 
       ggtitle(id[1]) +
       theme(legend.position="none")
@@ -146,12 +173,12 @@ for (file in stls) {
   slow.
 
 - aligning signatures –– I’m still doing this my initial way instead of
-  using your “markers” way because I added a piece in which all marks
-  are the same length, 900 points, with NA fillers on either side. I
-  figured this would make modeling easier. One thing I haven’t done is
-  to align the signals based on two criteria: the subset by tool (marks
-  at different angles) and then by angle. When I tried aligning the
-  marks made at different angles the alignment didn’t look good.
+  using your “tmaRks” way because I added a piece in which all marks are
+  the same length, 900 points, with NA fillers on either side. I figured
+  this would make modeling easier. One thing I haven’t done is to align
+  the signals based on two criteria: the subset by tool (marks at
+  different angles) and then by angle. When I tried aligning the marks
+  made at different angles the alignment didn’t look good.
 
 - binning –– So far I’ve done this by choosing an arbitrary number of
   bins (18, so that each bin has 50 points in it). It would be nice if I
