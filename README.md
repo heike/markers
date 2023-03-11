@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of tmaRks is to …
@@ -52,23 +53,23 @@ head(toolmarks)
 2.  Align by set
 
 ``` r
-library(tidyverse)
-#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-#> ✔ ggplot2 3.4.1     ✔ purrr   1.0.1
-#> ✔ tibble  3.1.8     ✔ dplyr   1.1.0
-#> ✔ tidyr   1.3.0     ✔ stringr 1.5.0
-#> ✔ readr   2.1.4     ✔ forcats 0.5.2
+library(tidyverse, quietly = TRUE)
+#> ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+#> ✔ dplyr     1.1.0     ✔ readr     2.1.4
+#> ✔ forcats   1.0.0     ✔ stringr   1.5.0
+#> ✔ ggplot2   3.4.1     ✔ tibble    3.2.0
+#> ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+#> ✔ purrr     1.0.1     
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
+#> ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors
 
 reps <- toolmarks %>% filter(tool <= 3, size == "L") %>% group_by(tool, side, size) %>%
   tidyr::nest()
 reps <- reps %>% mutate(
   data = data %>% purrr::map(sig_align_set, value=signature, group = mark, min.overlap = 500)
-) %>% tidyr::unnest()
-#> Warning: `cols` is now required when using `unnest()`.
-#> ℹ Please use `cols = c(data)`.
+) %>% tidyr::unnest(cols=data)
 ```
 
 3.  Visualize

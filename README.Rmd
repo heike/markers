@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of tmaRks is to ...

@@ -5,3 +5,6 @@
 ^\.github$
 ^.*\.rds$
 ^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
