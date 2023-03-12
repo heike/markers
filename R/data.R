@@ -14,7 +14,7 @@
 #'   \item{side}{screwdriver side that made the mark, A or B.}
 #'   \item{angle}{angle of attack, one of 60, 70, or 80.}
 #'   \item{material}{for now all marks are made on lead plates 'Pb'.}
-#'   \item{direction}{direction of the toolmark 'Fo'rward or 'Ba'ckward.}
+#'   \item{direction}{direction of the toolmark 'Fo'rward/Pull or 'Ba'ckward/Push.}
 #'   \item{size}{size of the screwdriver, 'S', 'M', or 'L'}
 #' }
 #' @source Maria Cuellar, CSAFE collaborative agreement with NIST.
@@ -53,7 +53,18 @@ data <- function (..., list = character(), package = NULL, lib.loc = NULL,
     mutate(
       tool = as.integer(.data$tool),
       angle = as.integer(.data$angle),
-      mark = as.integer(.data$mark)
+      mark = as.integer(.data$mark),
+      direction = ifelse(direction=="F", "Pull",
+                         ifelse(direction=="B", "Push", NA))
+    ) %>%
+    mutate(
+      tool = factor(tool),
+      side = factor(side),
+      size = factor(size, levels=c("S", "L")),
+      direction = factor(direction),
+      angle = factor(angle),
+      mark = factor(mark),
+      TID = factor(TID)
     )
   #  makeActiveBinding("toolmarks", toolmarks, topenv())
   assign("toolmarks", toolmarks, envir=envir)

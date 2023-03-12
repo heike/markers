@@ -2,8 +2,10 @@ Package: tmaRks
 Title: Compare Screwdriver Marks
 Version: 0.0.9000
 Authors@R: 
-    person("Heike", "Hofmann", , "hofmann@iastate.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-6216-5183"))
+    c(person("Heike", "Hofmann", , "hofmann@iastate.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6216-5183")),
+      person("Maria", "Cuellar", , "mcuellar@sas.upenn.edu", role = c("aut"),
+           comment = c(ORCID = "0000-0001-7242-9453")))
 Description: Extract and compare signatures from three dimensional topographic scans of screwdriver marks.
 Depends: R (>= 3.5.0)
 Imports: 
