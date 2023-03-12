@@ -62,29 +62,22 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of tmaRks is to …</p>
+<p>The goal of tmaRks is to extract and compare signatures from three dimensional topographic scans of screwdriver marks.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of tmaRks like so:</p>
+<p>You can install the development version of <code>tmaRks</code> from Github:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"heike/tmaRks"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/heike/tmaRks" class="external-link">tmaRks</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'tmaRks'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:utils':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     data</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">## basic example code</span></span></code></pre></div>
-<ol style="list-style-type: decimal">
-<li>Load toolmarks</li>
-</ol>
+<p>We have provided a sample data set of tool marks created by a total of 23 different screw drivers. This data is available as object <code>toolmarks</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/data.html">data</a></span><span class="op">(</span><span class="va">toolmarks</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">toolmarks</span><span class="op">)</span></span>
@@ -98,21 +91,97 @@
 <span><span class="co">#&gt; 5     1 S     A     F            80     1 T01SA-F80…  2.03  3.62 -0.0817 0.00166</span></span>
 <span><span class="co">#&gt; 6     1 S     A     F            80     1 T01SA-F80…  2.04  3.62 -0.0817 0.00157</span></span>
 <span><span class="co">#&gt; # … with abbreviated variable name ¹​signature</span></span></code></pre></div>
+<p>Marks are distinguished by their Tool ID (TID), which has the general form of Tool number (1-20), size (S, M, L), side (A,B), followed by direction (F,B) and angle, and finally the replicate (1-8):</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">toolmarks</span><span class="op">$</span><span class="va">TID</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "T09LA-F80-01" "T01SB-B80-05" "T19SB-F80-05" "T16SB-F80-02" "T03LB-F80-01"</span></span></code></pre></div>
+<p>For side A of the first small screw driver, we have a total of 8 marks made under an angle of 80 degrees in forward direction. Each mark consists of a signature of length 667:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">toolmarks</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">slice</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^T01SA-F80"</span>,<span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">count</span><span class="op">(</span><span class="va">TID</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 8 × 2</span></span>
+<span><span class="co">#&gt;   TID              n</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;        &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1 T01SA-F80-01   667</span></span>
+<span><span class="co">#&gt; 2 T01SA-F80-02   667</span></span>
+<span><span class="co">#&gt; 3 T01SA-F80-03   667</span></span>
+<span><span class="co">#&gt; 4 T01SA-F80-04   667</span></span>
+<span><span class="co">#&gt; 5 T01SA-F80-05   667</span></span>
+<span><span class="co">#&gt; 6 T01SA-F80-06   667</span></span>
+<span><span class="co">#&gt; 7 T01SA-F80-07   667</span></span>
+<span><span class="co">#&gt; 8 T01SA-F80-08   667</span></span></code></pre></div>
+<p>Each of the marks is represented by a profile (<code>value</code>) - derived from a suitable crosscut across the striations visible in a scan.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t1sa</span> <span class="op">&lt;-</span> <span class="va">toolmarks</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">slice</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^T01SA"</span>,<span class="va">TID</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>group <span class="op">=</span> <span class="va">TID</span>, colour <span class="op">=</span> <span class="va">direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Profiles of tool1 marks under an angle of 80 degrees"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
+<p>While we can see some similarities between the profiles,<br>
+the dominant structures in them are associated with the procedures of getting the marks (both in creating the marks: adjustment of the screw driver in the rig; and in retrieving the marks with a hand-held scanner: slightly uneven pressure in the surface capture).</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">signature</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>group <span class="op">=</span> <span class="va">TID</span>, colour <span class="op">=</span> <span class="va">direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Signatures of tool1 marks under an angle of 80 degrees"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.012</span>, <span class="fl">0.012</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 13 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
+<p>The procedure for extracting signatures from profiles is susceptible to edge effects:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t1sab80_2</span> <span class="op">&lt;-</span> <span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">TID</span> <span class="op">==</span> <span class="st">"T01SA-B80-02"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">t1sab80_2_sub</span> <span class="op">&lt;-</span> <span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">TID</span> <span class="op">==</span> <span class="st">"T01SA-B80-02"</span>, <span class="va">x</span> <span class="op">&lt;</span> <span class="fl">6.3</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">tmaRks</span><span class="fu">::</span><span class="fu"><a href="reference/cc_get_signature.html">cc_get_signature</a></span><span class="op">(</span><span class="va">t1sab80_2</span><span class="op">)</span> <span class="co"># trimmed again, not even using the reduced profile</span></span>
+<span></span>
+<span><span class="va">t1sab80_2</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>group <span class="op">=</span> <span class="va">TID</span>, colour <span class="op">=</span> <span class="st">"profile"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"T01SA-B80-02 - profile and signatures"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">signature</span>, group <span class="op">=</span> <span class="va">TID</span>, colour <span class="op">=</span> <span class="st">"signature-full"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">sig</span>, colour <span class="op">=</span> <span class="st">"signature-reduced"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">res</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; Warning: Removed 129 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%"></p>
+<p>The similarities between marks are stronger for the signatures than the profiles, but the signatures are not aligned well laterally (because of the scanning procedure).</p>
+<p>For aligning signatures, we single out one signature, then align with respect to that signature using the maximized cross-correlation:</p>
+<p>Aligning the marks separately by direction:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t1saf</span> <span class="op">&lt;-</span> <span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">direction</span> <span class="op">==</span> <span class="st">"F"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/sig_align_set.html">sig_align_set</a></span><span class="op">(</span><span class="va">signature</span>, group<span class="op">=</span><span class="va">mark</span>, min.overlap <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">t1sab</span> <span class="op">&lt;-</span> <span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">direction</span> <span class="op">==</span> <span class="st">"B"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/sig_align_set.html">sig_align_set</a></span><span class="op">(</span><span class="va">signature</span>, group<span class="op">=</span><span class="va">mark</span>, min.overlap <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t1saf</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">aligned_x</span>, y <span class="op">=</span> <span class="va">signature</span>, group <span class="op">=</span> <span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Forward direction"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t1sab</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">aligned_x</span>, y <span class="op">=</span> <span class="va">signature</span>, group <span class="op">=</span> <span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Backward direction"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.012</span>, <span class="fl">0.012</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 13 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-9-2.png" width="100%"></p>
+<p>Aligning the marks together:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t1sa</span> <span class="op">&lt;-</span> <span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/sig_align_set.html">sig_align_set</a></span><span class="op">(</span><span class="va">signature</span>, group<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/interaction.html" class="external-link">interaction</a></span><span class="op">(</span><span class="va">mark</span>, <span class="va">direction</span><span class="op">)</span>, min.overlap <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">aligned_x</span>, y <span class="op">=</span> <span class="va">signature</span>, group <span class="op">=</span> <span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>colour <span class="op">=</span> <span class="va">direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Both directions together"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.012</span>, <span class="fl">0.012</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 13 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-10-1.png" width="100%"> While there are strong similarities between signatures made by using the same side of a tool in different directions, there are also pronounced differences visible between the two sets of signatures.</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Align by set</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──</span></span>
-<span><span class="co">#&gt; ✔ dplyr     1.1.0     ✔ readr     2.1.4</span></span>
-<span><span class="co">#&gt; ✔ forcats   1.0.0     ✔ stringr   1.5.0</span></span>
-<span><span class="co">#&gt; ✔ ggplot2   3.4.1     ✔ tibble    3.2.0</span></span>
-<span><span class="co">#&gt; ✔ lubridate 1.9.2     ✔ tidyr     1.3.0</span></span>
-<span><span class="co">#&gt; ✔ purrr     1.0.1     </span></span>
-<span><span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
-<span><span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span></span>
-<span><span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span></span>
-<span><span class="co">#&gt; ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">toolmarks</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tool</span> <span class="op">&lt;=</span> <span class="fl">3</span>, <span class="va">size</span> <span class="op">==</span> <span class="st">"L"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">group_by</span><span class="op">(</span><span class="va">tool</span>, <span class="va">side</span>, <span class="va">size</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">nest</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -122,7 +191,7 @@
 <ol start="3" style="list-style-type: decimal">
 <li>Visualize</li>
 </ol>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">reps</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">unite</span><span class="op">(</span><span class="st">"id"</span>, <span class="va">tool</span>, <span class="va">side</span>, <span class="va">size</span>, remove <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span></span>
@@ -196,7 +265,7 @@
 <ol style="list-style-type: decimal">
 <li>Convert stl files to x3p files and save in an appropriate folder</li>
 </ol>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span>pattern<span class="op">=</span><span class="st">"stl"</span>, path<span class="op">=</span><span class="st">"data/stl_files"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -245,6 +314,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Heike Hofmann <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6216-5183" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Maria Cuellar <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-7242-9453" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -252,7 +322,6 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/heike/tmaRks/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/heike/markers/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
@@ -262,7 +331,7 @@
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Heike Hofmann.</p>
+<p>Developed by Heike Hofmann, Maria Cuellar.</p>
 </div>
 
 <div class="pkgdown-footer-right">
