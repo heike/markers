@@ -28,6 +28,7 @@
 #' analysis.
 #' @inheritParams utils::data
 #' @importFrom tidyr separate_wider_position separate_wider_delim
+#' @importFrom rlang .data
 #' @export
 #' @examples
 #' data(toolmarks)
@@ -54,17 +55,17 @@ data <- function (..., list = character(), package = NULL, lib.loc = NULL,
       tool = as.integer(.data$tool),
       angle = as.integer(.data$angle),
       mark = as.integer(.data$mark),
-      direction = ifelse(direction=="F", "Pull",
-                         ifelse(direction=="B", "Push", NA))
+      direction = ifelse(.data$direction=="F", "Pull",
+                         ifelse(.data$direction=="B", "Push", NA))
     ) %>%
     mutate(
-      tool = factor(tool),
-      side = factor(side),
-      size = factor(size, levels=c("S", "L")),
-      direction = factor(direction),
-      angle = factor(angle),
-      mark = factor(mark),
-      TID = factor(TID)
+      tool = factor(.data$tool),
+      side = factor(.data$side),
+      size = factor(.data$size, levels=c("S", "L")),
+      direction = factor(.data$direction),
+      angle = factor(.data$angle),
+      mark = factor(.data$mark),
+      TID = factor(.data$TID)
     )
   #  makeActiveBinding("toolmarks", toolmarks, topenv())
   assign("toolmarks", toolmarks, envir=envir)

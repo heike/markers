@@ -18,7 +18,7 @@ A data frame with 38,6712 rows and 13 columns:
 \item{side}{screwdriver side that made the mark, A or B.}
 \item{angle}{angle of attack, one of 60, 70, or 80.}
 \item{material}{for now all marks are made on lead plates 'Pb'.}
-\item{direction}{direction of the toolmark 'Fo'rward or 'Ba'ckward.}
+\item{direction}{direction of the toolmark 'Fo'rward/Pull or 'Ba'ckward/Push.}
 \item{size}{size of the screwdriver, 'S', 'M', or 'L'}
 }
 }
