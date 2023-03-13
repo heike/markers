@@ -24,6 +24,7 @@ remotes::install_github("heike/tmaRks")
 ``` r
 library(tmaRks)
 library(tidyverse, quietly = TRUE)
+library(patchwork)
 ## basic example code
 ```
 
@@ -52,7 +53,7 @@ direction (F,B) and angle, and finally the replicate (1-8):
 
 ``` r
 sample(unique(toolmarks$TID), size=5)
-#> [1] "T09LA-F80-01" "T01SB-B80-05" "T19SB-F80-05" "T16SB-F80-02" "T03LB-F80-01"
+#> [1] "T01SA-B80-02" "T01LA-F70-02" "T11SB-F80-05" "T06SA-F80-06" "T05SA-F80-07"
 ```
 
 For side A of the first small screw driver, we have a total of 8 marks
@@ -142,26 +143,24 @@ t1sab <- t1sa %>% filter(direction == "B") %>%
 ```
 
 ``` r
-t1saf %>% 
+ggf <- t1saf %>% 
   ggplot(aes(x = aligned_x, y = signature, group = TID)) +
   geom_line() +
-  ggtitle("Forward direction")
+  ggtitle("Forward direction (aligned to T01SA-F80-01)")
+ggb <- t1sab %>% 
+  ggplot(aes(x = aligned_x, y = signature, group = TID)) +
+  geom_line() +
+  ggtitle("Backward direction (aligned to T01SA-B80-01)") + 
+  ylim(c(-0.012, 0.012))
+
+ggf/ggb
+#> Warning: Removed 13 rows containing missing values (`geom_line()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
-``` r
-t1sab %>% 
-  ggplot(aes(x = aligned_x, y = signature, group = TID)) +
-  geom_line() +
-  ggtitle("Backward direction") + 
-  ylim(c(-0.012, 0.012))
-#> Warning: Removed 13 rows containing missing values (`geom_line()`).
-```
-
-<img src="man/figures/README-unnamed-chunk-9-2.png" width="100%" />
-
-Aligning the marks together:
+Aligning the marks together shows that the local minima and maxima align
+better than expected at first glance:
 
 ``` r
 t1sa <- t1sa %>% 
@@ -170,7 +169,7 @@ t1sa <- t1sa %>%
 t1sa %>% 
   ggplot(aes(x = aligned_x, y = signature, group = TID)) +
   geom_line(aes(colour = direction)) +
-  ggtitle("Both directions together") + 
+  ggtitle("All signatures aligned with respect to T01SA-F80-01") + 
   ylim(c(-0.012, 0.012))
 #> Warning: Removed 13 rows containing missing values (`geom_line()`).
 ```
@@ -179,6 +178,44 @@ t1sa %>%
 While there are strong similarities between signatures made by using the
 same side of a tool in different directions, there are also pronounced
 differences visible between the two sets of signatures.
+
+### Hierarchical approach to alignment
+
+It is not always advisable or even possible to align all signatures to
+the same signature.
+
+`sig_align_set` aligns all signatures in `data` to the first signature
+as identified by the levels of the group structure.
+
+``` r
+# Align the first mark of the backwards direction to the first mark in the forward direction
+firsts <- t1sa %>% filter(mark==1) %>% 
+  sig_align_set(signature, group=direction, min.overlap = 400)
+```
+
+Then use this alignment to figure out the shift between the forward
+group and the backward group.
+
+``` r
+aligned_wide <- firsts %>% group_by(TID) %>% arrange(x) %>% mutate(x = 1:n()) %>% ungroup() %>%
+  select(x, TID, aligned_x) %>% 
+  pivot_wider(values_from = aligned_x, names_from = TID)
+lags_wide <- aligned_wide %>% 
+  summarize(across(starts_with("T01"), .f = function(col) unique(col - x))) %>%
+  pivot_longer(starts_with("T01"), names_to="TID", values_to="lag")
+```
+
+``` r
+t1saf %>% 
+  ggplot(aes(x = aligned_x, y = signature, group = TID)) +
+  geom_line(aes(colour = "forward")) +
+  ggtitle("Forward direction (aligned to T01SA-F80-01)") +
+  geom_line(aes(x = aligned_x+lags_wide$lag[2], colour = "backward"), data = t1sab) +
+  ylim(c(-0.012, 0.012))
+#> Warning: Removed 13 rows containing missing values (`geom_line()`).
+```
+
+<img src="man/figures/README-unnamed-chunk-13-1.png" width="100%" />
 
 2.  Align by set
 

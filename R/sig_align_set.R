@@ -3,6 +3,9 @@
 #' Align all signatures in the same group. All signatures in this group are aligned
 #' with respect to the first signature in a group.
 #' Alignments will vary depending on which signature is used as 'first'.
+#' TODO: check on resolution
+#' IMPORTANT: the value vectors have to be in the same order for each group and
+#' taken on the same, equi-distant grid (no missing values!)
 #' @param data data frame with id, signatures and grouping variable
 #' @param value symbol for the signature values
 #' @param group symbol (variable) for grouping
@@ -54,6 +57,11 @@
 sig_align_set <- function (data, value, group, min.overlap=500) {
   group <- enquo(group)
   value <- enquo(value)
+
+  # if("x" %in% names(data)) {
+  #   diffx <- data$x %>% unique() %>% sort() %>% diff()
+  #   cat("For a horizontal crosscut we only have one value here.")
+  # }
   dlist <- data %>% group_by(!!group) %>% tidyr::nest()
   dlist <- dlist %>% mutate(data = data %>% purrr::map(.f = function(d) {
     # align all signatures to the first
@@ -62,24 +70,14 @@ sig_align_set <- function (data, value, group, min.overlap=500) {
         pull, min.overlap = min.overlap)
     idx1 <- which(!is.na(aligned$lands$sig1))[1]
     idx2 <- which(!is.na(aligned$lands$sig2))[1]
-#browser()
-#sig1_one <- idx1 - idx2
-    # if(length(idx1) >= 1) { sig1_one <- idx1[1] - 1 # in which position do we have the first non-missing value in sig1?
-    # } else {
-    #   idx2 <- min(which(!is.na(aligned$lands$sig2)))
-    #   if (!is.infinite(idx2)) sig1_one <- -idx2 + 1
-    # }
-#    aligned$lands %>%
-#      mutate(x = x - sig1_one,
-#             ccf = aligned$ccf) %>%
-#      select(x, aligned = sig2, ccf) %>%
-#      slice(1:nrow(d)) # this *should* make the aligned data the same length as the one we started out with
-#    browser()
 
-    # this assumes that d is ordered in x
-    d %>% mutate(aligned_x = 1:nrow(d) - idx1 + idx2, ccf = aligned$ccf) #
+    # we assume that d is ordered in x
+    d %>% mutate(
+      aligned_x = 1:nrow(d) - idx1 + idx2,
+      ccf = aligned$ccf,
+      lag = idx2 - idx1) #
   }))
-# browser()
+
   # now unnest to the longform again
   long <- dlist %>%  unnest(cols = data)
   long

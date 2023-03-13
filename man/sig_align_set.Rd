@@ -24,6 +24,9 @@ For a conversion to the physical extent, scale by the resolution of the scan.
 Align all signatures in the same group. All signatures in this group are aligned
 with respect to the first signature in a group.
 Alignments will vary depending on which signature is used as 'first'.
+TODO: check on resolution
+IMPORTANT: the value vectors have to be in the same order for each group and
+taken on the same, equi-distant grid (no missing values!)
 }
 \examples{
 library(dplyr)
