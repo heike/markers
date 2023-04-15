@@ -62,10 +62,14 @@ sig_align_set <- function (data, value, group, min.overlap=500) {
   #   diffx <- data$x %>% unique() %>% sort() %>% diff()
   #   cat("For a horizontal crosscut we only have one value here.")
   # }
+  glevels <- data %>% dplyr::select(!!group) %>% pull %>% levels()
+  first <- glevels[1]
+
   dlist <- data %>% group_by(!!group) %>% tidyr::nest()
+  firstidx <- which(dlist %>% select(!!group) %>% pull ==first)
   dlist <- dlist %>% mutate(data = data %>% purrr::map(.f = function(d) {
-    # align all signatures to the first
-    aligned <- sig_align(dlist$data[[1]] %>%
+    # align all signatures to the first group level
+    aligned <- sig_align(dlist$data[[firstidx]] %>%
       select(!!value) %>% pull, d %>% select(!!value) %>%
         pull, min.overlap = min.overlap)
     idx1 <- which(!is.na(aligned$lands$sig1))[1]
