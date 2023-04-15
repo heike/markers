@@ -76,6 +76,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/heike/tmaRks" class="external-link">tmaRks</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span><span class="co">## basic example code</span></span></code></pre></div>
 <p>We have provided a sample data set of tool marks created by a total of 23 different screw drivers. This data is available as object <code>toolmarks</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -94,7 +95,7 @@
 <p>Marks are distinguished by their Tool ID (TID), which has the general form of Tool number (1-20), size (S, M, L), side (A,B), followed by direction (F,B) and angle, and finally the replicate (1-8):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">toolmarks</span><span class="op">$</span><span class="va">TID</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "T09LA-F80-01" "T01SB-B80-05" "T19SB-F80-05" "T16SB-F80-02" "T03LB-F80-01"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "T01SA-B80-02" "T01LA-F70-02" "T11SB-F80-05" "T06SA-F80-06" "T05SA-F80-07"</span></span></code></pre></div>
 <p>For side A of the first small screw driver, we have a total of 8 marks made under an angle of 80 degrees in forward direction. Each mark consists of a signature of length 667:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">toolmarks</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">slice</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^T01SA-F80"</span>,<span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">count</span><span class="op">(</span><span class="va">TID</span><span class="op">)</span></span>
@@ -152,35 +153,61 @@ the dominant structures in them are associated with the procedures of getting th
 <span><span class="va">t1sab</span> <span class="op">&lt;-</span> <span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">direction</span> <span class="op">==</span> <span class="st">"B"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/sig_align_set.html">sig_align_set</a></span><span class="op">(</span><span class="va">signature</span>, group<span class="op">=</span><span class="va">mark</span>, min.overlap <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">t1saf</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">ggf</span> <span class="op">&lt;-</span> <span class="va">t1saf</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">aligned_x</span>, y <span class="op">=</span> <span class="va">signature</span>, group <span class="op">=</span> <span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Forward direction"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">t1sab</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Forward direction (aligned to T01SA-F80-01)"</span><span class="op">)</span></span>
+<span><span class="va">ggb</span> <span class="op">&lt;-</span> <span class="va">t1sab</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">aligned_x</span>, y <span class="op">=</span> <span class="va">signature</span>, group <span class="op">=</span> <span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Backward direction"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Backward direction (aligned to T01SA-B80-01)"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">ylim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.012</span>, <span class="fl">0.012</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ggf</span><span class="op">/</span><span class="va">ggb</span></span>
 <span><span class="co">#&gt; Warning: Removed 13 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-9-2.png" width="100%"></p>
-<p>Aligning the marks together:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"></p>
+<p>Aligning the marks together shows that the local minima and maxima align better than expected at first glance:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t1sa</span> <span class="op">&lt;-</span> <span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/sig_align_set.html">sig_align_set</a></span><span class="op">(</span><span class="va">signature</span>, group<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/interaction.html" class="external-link">interaction</a></span><span class="op">(</span><span class="va">mark</span>, <span class="va">direction</span><span class="op">)</span>, min.overlap <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">aligned_x</span>, y <span class="op">=</span> <span class="va">signature</span>, group <span class="op">=</span> <span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>colour <span class="op">=</span> <span class="va">direction</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Both directions together"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"All signatures aligned with respect to T01SA-F80-01"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">ylim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.012</span>, <span class="fl">0.012</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 13 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-10-1.png" width="100%"> While there are strong similarities between signatures made by using the same side of a tool in different directions, there are also pronounced differences visible between the two sets of signatures.</p>
+<div class="section level3">
+<h3 id="hierarchical-approach-to-alignment">Hierarchical approach to alignment<a class="anchor" aria-label="anchor" href="#hierarchical-approach-to-alignment"></a>
+</h3>
+<p>It is not always advisable or even possible to align all signatures to the same signature.</p>
+<p><code>sig_align_set</code> aligns all signatures in <code>data</code> to the first signature as identified by the levels of the group structure.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Align the first mark of the backwards direction to the first mark in the forward direction</span></span>
+<span><span class="va">firsts</span> <span class="op">&lt;-</span> <span class="va">t1sa</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">mark</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/sig_align_set.html">sig_align_set</a></span><span class="op">(</span><span class="va">signature</span>, group<span class="op">=</span><span class="va">direction</span>, min.overlap <span class="op">=</span> <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
+<p>Then use this alignment to figure out the shift between the forward group and the backward group.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aligned_wide</span> <span class="op">&lt;-</span> <span class="va">firsts</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">group_by</span><span class="op">(</span><span class="va">TID</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">arrange</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">mutate</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">x</span>, <span class="va">TID</span>, <span class="va">aligned_x</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">pivot_wider</span><span class="op">(</span>values_from <span class="op">=</span> <span class="va">aligned_x</span>, names_from <span class="op">=</span> <span class="va">TID</span><span class="op">)</span></span>
+<span><span class="va">lags_wide</span> <span class="op">&lt;-</span> <span class="va">aligned_wide</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">summarize</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"T01"</span><span class="op">)</span>, .f <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">col</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">col</span> <span class="op">-</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"T01"</span><span class="op">)</span>, names_to<span class="op">=</span><span class="st">"TID"</span>, values_to<span class="op">=</span><span class="st">"lag"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t1saf</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">aligned_x</span>, y <span class="op">=</span> <span class="va">signature</span>, group <span class="op">=</span> <span class="va">TID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"forward"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Forward direction (aligned to T01SA-F80-01)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">aligned_x</span><span class="op">+</span><span class="va">lags_wide</span><span class="op">$</span><span class="va">lag</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, colour <span class="op">=</span> <span class="st">"backward"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">t1sab</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.012</span>, <span class="fl">0.012</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 13 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-13-1.png" width="100%"></p>
 <ol start="2" style="list-style-type: decimal">
 <li>Align by set</li>
 </ol>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">toolmarks</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tool</span> <span class="op">&lt;=</span> <span class="fl">3</span>, <span class="va">size</span> <span class="op">==</span> <span class="st">"L"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu">group_by</span><span class="op">(</span><span class="va">tool</span>, <span class="va">side</span>, <span class="va">size</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
@@ -191,7 +218,7 @@ the dominant structures in them are associated with the procedures of getting th
 <ol start="3" style="list-style-type: decimal">
 <li>Visualize</li>
 </ol>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="va">reps</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">unite</span><span class="op">(</span><span class="st">"id"</span>, <span class="va">tool</span>, <span class="va">side</span>, <span class="va">size</span>, remove <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span></span>
@@ -265,7 +292,7 @@ the dominant structures in them are associated with the procedures of getting th
 <ol style="list-style-type: decimal">
 <li>Convert stl files to x3p files and save in an appropriate folder</li>
 </ol>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span>pattern<span class="op">=</span><span class="st">"stl"</span>, path<span class="op">=</span><span class="st">"data/stl_files"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -284,6 +311,7 @@ the dominant structures in them are associated with the procedures of getting th
 <li><p>modeling –– The main task here has been calculating means by tool, and then the variance across tools. I couldn’t figure out how to do this in general so you’ll see it’s quite specific.</p></li>
 </ul>
 <p>One more point: - concatenating sides –– I’d like to start doing the whole analysis by using the signals from sides A and B of each tool concatenated. I think that is a more honest description of what the data are. That would have to be done after aligning, I think.</p>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
