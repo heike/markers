@@ -67,6 +67,8 @@ sig_align_set <- function (data, value, group, min.overlap=500) {
 
   dlist <- data %>% group_by(!!group) %>% tidyr::nest()
   firstidx <- which(dlist %>% select(!!group) %>% pull ==first)
+  if (length(firstidx) == 0) firstidx <- 1
+
   dlist <- dlist %>% mutate(data = data %>% purrr::map(.f = function(d) {
     # align all signatures to the first group level
     aligned <- sig_align(dlist$data[[firstidx]] %>%

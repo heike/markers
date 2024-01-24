@@ -5,10 +5,10 @@
 #' @format ## `toolmarks`
 #' A data frame with 38,6712 rows and 13 columns:
 #' \describe{
-#'   \item{x}{numeric value of the x location in ???}
-#'   \item{y}{numeric value of the y location in ???}
-#'   \item{value}{numeric value of the surface height in ???}
-#'   \item{signature}{numeric value the signal height}
+#'   \item{x}{numeric value of the x location in millimeters.}
+#'   \item{y}{numeric value of the y location in millimeters.}
+#'   \item{value}{numeric value of the surface height in millimeters.}
+#'   \item{signature}{numeric value the signal height in millimeters.}
 #'   \item{tool}{tool ID, value between 1 and 20}
 #'   \item{mark}{iteration, value between 1 and 8}
 #'   \item{side}{screwdriver side that made the mark, A or B.}
